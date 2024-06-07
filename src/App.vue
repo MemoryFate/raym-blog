@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <Header />
-        <router-view></router-view>
+        <Content>
+            <router-view></router-view>
+        </Content>
         <Footer />
     </div>
 </template>
@@ -9,7 +11,7 @@
 <script setup>
 import Header from "./components/Header.vue"
 import Footer from "./components/Footer.vue"
-
+import Content from "./components/Content.vue"
 </script>
 
 <style>
@@ -18,10 +20,12 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 }
 #app {
-    max-width: 800px;
-    margin: 2rem auto;
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 0 1rem;
 }
 </style>

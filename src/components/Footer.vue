@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <p>&copy; 2024 My Tech Blog</p>
+    2024 RayM Blog
   </footer>
 </template>
 
@@ -9,7 +9,7 @@ footer {
   background-color: #333;
   color: #fff;
   text-align: center;
-  padding: 1rem 0;
   width: 100%;
+  line-height: 80px;
 }
 </style>

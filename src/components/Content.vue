@@ -1,6 +1,6 @@
 <template>
     <article>
-
+        <slot />
     </article>
 </template>
 
@@ -9,10 +9,13 @@
 
 <style scoped>
 article {
+    height: calc(100vh - 160px);
+    overflow: scroll;
     background-color: #fff;
     padding: 1rem;
-    margin-bottom: 1rem;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+article::-webkit-scrollbar {
+    display: none;
 }
 </style>
