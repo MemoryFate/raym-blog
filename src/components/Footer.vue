@@ -10,6 +10,6 @@ footer {
   color: #fff;
   text-align: center;
   width: 100%;
-  line-height: 80px;
+  line-height: 60px;
 }
 </style>
