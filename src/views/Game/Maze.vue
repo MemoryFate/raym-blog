@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="dot red" :style="{ top: state.startPoint.y * rectSize + 'px', left: state.startPoint.x * rectSize + 'px', width: rectSize + 'px' }"></div>
-            <div class="dot blue" :style="{ top: state.endPoint.y * rectSize + 'px', left: state.endPoint.x * rectSize + 'px', width: rectSize + 'px' }"></div>
+            <div class="dot blue" v-if="state.endPoint" :style="{ top: state.endPoint.y * rectSize + 'px', left: state.endPoint.x * rectSize + 'px', width: rectSize + 'px' }"></div>
         </div>
     </div>
 </template>
@@ -21,13 +21,13 @@ class Point {
     }
 
     get x() {
-        return this._x
+        return parseInt(this._x)
     }
     set x(v) {
         this._x = parseInt(v)
     }
     get y() {
-        return this._y
+        return parseInt(this._y)
     }
     set y(v) {
         this._y = parseInt(v)
@@ -39,7 +39,7 @@ const state = reactive({
     rows: 0,
     cols: 0,
     startPoint: new Point(),
-    endPoint: new Point(),
+    endPoint: undefined,
 })
 
 const rectSize = 20
@@ -100,7 +100,6 @@ function initMaze() {
             if (p.y >= 0) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
-                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderTop = "none"
                     nextRect.style.borderBottom = "none"
@@ -113,7 +112,6 @@ function initMaze() {
             if (p.x >= 0) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
-                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderLeft = "none"
                     nextRect.style.borderRight = "none"
@@ -126,7 +124,6 @@ function initMaze() {
             if (p.x <= state.cols - 1) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
-                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderRight = "none"
                     nextRect.style.borderLeft = "none"
@@ -139,7 +136,6 @@ function initMaze() {
             if (p.y <= state.rows - 1) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
-                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderBottom = "none"
                     nextRect.style.borderTop = "none"
@@ -170,11 +166,7 @@ function calculateWall(point, type = "") {
 
 function rectClick(x, y) {
     state.endPoint = new Point(x, y)
-    // ctx.moveTo(state.startPoint.x * rectSize + rectSize / 2, state.startPoint.y * rectSize + rectSize / 2)
-    // ctx.lineTo(state.endPoint.x * rectSize + rectSize / 2, state.endPoint.y * rectSize + rectSize / 2)
-    // ctx.lineWidth = 5
-    // ctx.strokeStyle = "#32a1ff"
-    // ctx.stroke()
+    findPath()
 }
 function drawArrow(start, end) {
     const canvas = document.getElementById("canvas")
@@ -213,6 +205,41 @@ function drawArrow(start, end) {
     ctx.lineTo(arrowX, arrowY)
     ctx.stroke()
     ctx.restore()
+}
+
+function findPath() {
+    const rects = document.getElementsByClassName("rect")
+    Array.prototype.forEach.call(rects, _ => {
+        _.removeAttribute("hasPoint1")
+    })
+    const canvas = document.getElementById("canvas")
+    const ctx = canvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    let path = [state.startPoint]
+    let currentP = path[0]
+    document.getElementById(`rect_${currentP.x}_${currentP.y}`).setAttribute("hasPoint1", "yes!")
+    while (currentP.x != state.endPoint.x || currentP.y != state.endPoint.y) {
+        const rect = document.getElementById(`rect_${currentP.x}_${currentP.y}`)
+        let nextP = undefined
+        if (rect.style.borderTop == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y - 1}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x, currentP.y - 1)
+        } else if (rect.style.borderLeft == "none" && !document.getElementById(`rect_${currentP.x - 1}_${currentP.y}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x - 1, currentP.y)
+        } else if (rect.style.borderRight == "none" && !document.getElementById(`rect_${currentP.x + 1}_${currentP.y}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x + 1, currentP.y)
+        } else if (rect.style.borderBottom == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y + 1}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x, currentP.y + 1)
+        }
+        if (document.getElementById(`rect_${nextP?.x}_${nextP?.y}`)) {
+            document.getElementById(`rect_${nextP.x}_${nextP.y}`).setAttribute("hasPoint1", "yes!")
+            drawArrow(currentP, nextP)
+            path.push(nextP)
+            currentP = nextP
+        } else {
+            path.pop()
+            currentP = path[path.length - 1]
+        }
+    }
 }
 </script>
 <style lang="scss" scoped>
