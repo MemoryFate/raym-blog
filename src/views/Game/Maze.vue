@@ -166,7 +166,8 @@ function calculateWall(point, type = "") {
 
 function rectClick(x, y) {
     state.endPoint = new Point(x, y)
-    findPath()
+    clearCanvas()
+    dfsPath()
 }
 function drawArrow(start, end) {
     const canvas = document.getElementById("canvas")
@@ -206,8 +207,7 @@ function drawArrow(start, end) {
     ctx.stroke()
     ctx.restore()
 }
-
-function findPath() {
+function clearCanvas() {
     const rects = document.getElementsByClassName("rect")
     Array.prototype.forEach.call(rects, _ => {
         _.removeAttribute("hasPoint1")
@@ -215,29 +215,35 @@ function findPath() {
     const canvas = document.getElementById("canvas")
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+function dfsPath() {
     let path = [state.startPoint]
     let currentP = path[0]
     document.getElementById(`rect_${currentP.x}_${currentP.y}`).setAttribute("hasPoint1", "yes!")
-    while (currentP.x != state.endPoint.x || currentP.y != state.endPoint.y) {
-        const rect = document.getElementById(`rect_${currentP.x}_${currentP.y}`)
-        let nextP = undefined
-        if (rect.style.borderTop == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y - 1}`).getAttribute("hasPoint1")) {
-            nextP = new Point(currentP.x, currentP.y - 1)
-        } else if (rect.style.borderLeft == "none" && !document.getElementById(`rect_${currentP.x - 1}_${currentP.y}`).getAttribute("hasPoint1")) {
-            nextP = new Point(currentP.x - 1, currentP.y)
-        } else if (rect.style.borderRight == "none" && !document.getElementById(`rect_${currentP.x + 1}_${currentP.y}`).getAttribute("hasPoint1")) {
-            nextP = new Point(currentP.x + 1, currentP.y)
-        } else if (rect.style.borderBottom == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y + 1}`).getAttribute("hasPoint1")) {
-            nextP = new Point(currentP.x, currentP.y + 1)
-        }
-        if (document.getElementById(`rect_${nextP?.x}_${nextP?.y}`)) {
-            document.getElementById(`rect_${nextP.x}_${nextP.y}`).setAttribute("hasPoint1", "yes!")
-            drawArrow(currentP, nextP)
-            path.push(nextP)
-            currentP = nextP
-        } else {
-            path.pop()
-            currentP = path[path.length - 1]
+    dfs()
+    function dfs() {
+        if (currentP.x != state.endPoint.x || currentP.y != state.endPoint.y) {
+            const rect = document.getElementById(`rect_${currentP.x}_${currentP.y}`)
+            let nextP = undefined
+            if (rect.style.borderTop == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y - 1}`).getAttribute("hasPoint1")) {
+                nextP = new Point(currentP.x, currentP.y - 1)
+            } else if (rect.style.borderLeft == "none" && !document.getElementById(`rect_${currentP.x - 1}_${currentP.y}`).getAttribute("hasPoint1")) {
+                nextP = new Point(currentP.x - 1, currentP.y)
+            } else if (rect.style.borderRight == "none" && !document.getElementById(`rect_${currentP.x + 1}_${currentP.y}`).getAttribute("hasPoint1")) {
+                nextP = new Point(currentP.x + 1, currentP.y)
+            } else if (rect.style.borderBottom == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y + 1}`).getAttribute("hasPoint1")) {
+                nextP = new Point(currentP.x, currentP.y + 1)
+            }
+            if (document.getElementById(`rect_${nextP?.x}_${nextP?.y}`)) {
+                document.getElementById(`rect_${nextP.x}_${nextP.y}`).setAttribute("hasPoint1", "yes!")
+                drawArrow(currentP, nextP)
+                path.push(nextP)
+                currentP = nextP
+            } else {
+                path.pop()
+                currentP = path[path.length - 1]
+            }
+            dfs()
         }
     }
 }
