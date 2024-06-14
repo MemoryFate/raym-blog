@@ -1,17 +1,11 @@
 <template>
     <div id="app">
-        <Header />
-        <Content>
-            <router-view></router-view>
-        </Content>
-        <Footer />
+        <BasicLayout />
     </div>
 </template>
 
 <script setup>
-import Header from "./components/Header.vue"
-import Footer from "./components/Footer.vue"
-import Content from "./components/Content.vue"
+import BasicLayout from "@/layout/BasicLayout.vue"
 </script>
 
 <style>
