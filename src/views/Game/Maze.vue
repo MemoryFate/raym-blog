@@ -87,18 +87,20 @@ function initRect() {
 function initMaze() {
     let walls = []
     state.startPoint = new Point(Math.floor(Math.random() * state.cols), Math.floor(Math.random() * state.rows))
+    document.getElementById(`rect_${state.startPoint.x}_${state.startPoint.y}`).setAttribute("hasPoint", "yes!")
     walls = walls.concat(calculateWall(state.startPoint))
     while (walls.length) {
         const idx = Math.floor(Math.random() * walls.length)
         const wall = walls[idx]
-        const tmp = wall.split("_") // x y [top|left|right|bottom]
-        const sp = new Point(parseInt(tmp[0]), parseInt(tmp[1]))
-        const rect = document.getElementById(`rect_${tmp[0]}_${tmp[1]}`)
+        const tmp = wall.split("_") // [x, y, (top|left|right|bottom)]
+        const sp = new Point(parseInt(tmp[0]), parseInt(tmp[1])) // start point
+        const rect = document.getElementById(`rect_${sp.x}_${sp.y}`)
         if (tmp[2] == "top") {
             let p = new Point(sp.x, sp.y - 1)
             if (p.y >= 0) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
+                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderTop = "none"
                     nextRect.style.borderBottom = "none"
@@ -111,6 +113,7 @@ function initMaze() {
             if (p.x >= 0) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
+                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderLeft = "none"
                     nextRect.style.borderRight = "none"
@@ -123,6 +126,7 @@ function initMaze() {
             if (p.x <= state.cols - 1) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
+                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderRight = "none"
                     nextRect.style.borderLeft = "none"
@@ -135,6 +139,7 @@ function initMaze() {
             if (p.y <= state.rows - 1) {
                 const nextRect = document.getElementById(`rect_${p.x}_${p.y}`)
                 if (!nextRect.getAttribute("hasPoint")) {
+                    drawArrow(sp, p)
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderBottom = "none"
                     nextRect.style.borderTop = "none"
@@ -165,13 +170,49 @@ function calculateWall(point, type = "") {
 
 function rectClick(x, y) {
     state.endPoint = new Point(x, y)
+    // ctx.moveTo(state.startPoint.x * rectSize + rectSize / 2, state.startPoint.y * rectSize + rectSize / 2)
+    // ctx.lineTo(state.endPoint.x * rectSize + rectSize / 2, state.endPoint.y * rectSize + rectSize / 2)
+    // ctx.lineWidth = 5
+    // ctx.strokeStyle = "#32a1ff"
+    // ctx.stroke()
+}
+function drawArrow(start, end) {
     const canvas = document.getElementById("canvas")
     const ctx = canvas.getContext("2d")
-    ctx.moveTo(state.startPoint.x * rectSize + rectSize / 2, state.startPoint.y * rectSize + rectSize / 2)
-    ctx.lineTo(state.endPoint.x * rectSize + rectSize / 2, state.endPoint.y * rectSize + rectSize / 2)
-    ctx.lineWidth = 5
+    const theta = 30 // 箭头夹角
+    const headlen = rectSize / 4 // 箭头边长
+    ctx.lineWidth = 0.5
     ctx.strokeStyle = "#32a1ff"
+    var fromX = start.x * rectSize + rectSize / 2,
+        fromY = start.y * rectSize + rectSize / 2,
+        toX = end.x * rectSize + rectSize / 2,
+        toY = end.y * rectSize + rectSize / 2
+    var angle = (Math.atan2(fromY - toY, fromX - toX) * 180) / Math.PI,
+        angle1 = ((angle + theta) * Math.PI) / 180,
+        angle2 = ((angle - theta) * Math.PI) / 180,
+        topX = headlen * Math.cos(angle1),
+        topY = headlen * Math.sin(angle1),
+        botX = headlen * Math.cos(angle2),
+        botY = headlen * Math.sin(angle2)
+
+    ctx.save()
+    ctx.beginPath()
+
+    var arrowX = fromX - topX,
+        arrowY = fromY - topY
+
+    ctx.moveTo(arrowX, arrowY)
+    ctx.moveTo(fromX, fromY)
+    ctx.lineTo(toX, toY)
+    arrowX = toX + topX
+    arrowY = toY + topY
+    ctx.moveTo(arrowX, arrowY)
+    ctx.lineTo(toX, toY)
+    arrowX = toX + botX
+    arrowY = toY + botY
+    ctx.lineTo(arrowX, arrowY)
     ctx.stroke()
+    ctx.restore()
 }
 </script>
 <style lang="scss" scoped>
