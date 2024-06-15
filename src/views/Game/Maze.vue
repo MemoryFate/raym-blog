@@ -10,6 +10,12 @@
             <div class="dot red" :style="{ top: state.startPoint.y * rectSize + 'px', left: state.startPoint.x * rectSize + 'px', width: rectSize + 'px' }"></div>
             <div class="dot blue" v-if="state.endPoint" :style="{ top: state.endPoint.y * rectSize + 'px', left: state.endPoint.x * rectSize + 'px', width: rectSize + 'px' }"></div>
         </div>
+        <div>
+            <input type="radio" value="1" id="dfs" name="radio_group" checked />
+            <label for="dfs">DFS算法</label>
+            <input type="radio" value="2" id="astar" name="radio_group" />
+            <label for="a">A*算法</label>
+        </div>
     </div>
 </template>
 <script setup>
@@ -215,6 +221,13 @@ function clearCanvas() {
     const canvas = document.getElementById("canvas")
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+function astarPath() {
+    let openAry = [state.startPoint]
+    let closeAry = []
+    const minNum = Math.abs(state.startPoint.x - state.endPoint.x) + Math.abs(state.startPoint.y - state.endPoint.y)
+    
+
 }
 function dfsPath() {
     let path = [state.startPoint]
