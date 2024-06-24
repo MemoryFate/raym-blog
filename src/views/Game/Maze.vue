@@ -57,27 +57,28 @@ onMounted(() => {
     })
 })
 document.addEventListener("keydown", e => {
-    console.log(e.code)
+    let x, y
+    const rect = document.getElementById(`rect_${state.startPoint.x}_${state.startPoint.y}`)
     if (e.code == "KeyW") {
-        const x = state.startPoint.x
-        const y = state.startPoint.y - 1 > 0 ? state.startPoint.y - 1 : 0
-        state.startPoint = new Point(x, y)
+        x = state.startPoint.x
+        y = state.startPoint.y - 1 > 0 ? state.startPoint.y - 1 : 0
+        if (rect.style.borderTop != "none") return
+    } else if (e.code == "KeyA") {
+        x = state.startPoint.x - 1 > 0 ? state.startPoint.x - 1 : 0
+        y = state.startPoint.y
+        if (rect.style.borderLeft != "none") return
+    } else if (e.code == "KeyS") {
+        x = state.startPoint.x
+        y = state.startPoint.y + 1 > state.rows - 1 ? state.rows - 1 : state.startPoint.y + 1
+        if (rect.style.borderBottom != "none") return
+    } else if (e.code == "KeyD") {
+        x = state.startPoint.x + 1 > state.cols - 1 ? state.cols - 1 : state.startPoint.x + 1
+        y = state.startPoint.y
+        if (rect.style.borderRight != "none") return
+    } else {
+        return
     }
-    if (e.code == "KeyA") {
-        const x = state.startPoint.x - 1 > 0 ? state.startPoint.x - 1 : 0
-        const y = state.startPoint.y
-        state.startPoint = new Point(x, y)
-    }
-    if (e.code == "KeyS") {
-        const x = state.startPoint.x
-        const y = state.startPoint.y + 1 > state.rows - 1 ? state.startPoint.y + 1 : state.rows - 1
-        state.startPoint = new Point(x, y)
-    }
-    if (e.code == "KeyD") {
-        const x = state.startPoint.x + 1 > state.cols - 1 ? state.startPoint.x + 1 : state.cols - 1
-        const y = state.startPoint.y
-        state.startPoint = new Point(x, y)
-    }
+    state.startPoint = new Point(x, y)
 })
 function initRect() {
     state.rows = document.getElementById("maze_area").clientHeight / rectSize
@@ -94,7 +95,7 @@ function initMaze() {
     let walls = []
     state.startPoint = new Point(Math.floor(Math.random() * state.cols), Math.floor(Math.random() * state.rows))
     document.getElementById(`rect_${state.startPoint.x}_${state.startPoint.y}`).setAttribute("hasPoint", "yes!")
-    walls = walls.concat(calculateWall(state.startPoint))
+    walls = walls.concat(findWall(state.startPoint))
     while (walls.length) {
         const idx = Math.floor(Math.random() * walls.length)
         const wall = walls[idx]
@@ -109,7 +110,7 @@ function initMaze() {
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderTop = "none"
                     nextRect.style.borderBottom = "none"
-                    walls = walls.concat(calculateWall(p, "bottom"))
+                    walls = walls.concat(findWall(p, "bottom"))
                 }
             }
         }
@@ -121,7 +122,7 @@ function initMaze() {
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderLeft = "none"
                     nextRect.style.borderRight = "none"
-                    walls = walls.concat(calculateWall(p, "right"))
+                    walls = walls.concat(findWall(p, "right"))
                 }
             }
         }
@@ -133,7 +134,7 @@ function initMaze() {
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderRight = "none"
                     nextRect.style.borderLeft = "none"
-                    walls = walls.concat(calculateWall(p, "left"))
+                    walls = walls.concat(findWall(p, "left"))
                 }
             }
         }
@@ -145,15 +146,15 @@ function initMaze() {
                     nextRect.setAttribute("hasPoint", "yes!")
                     rect.style.borderBottom = "none"
                     nextRect.style.borderTop = "none"
-                    walls = walls.concat(calculateWall(p, "top"))
+                    walls = walls.concat(findWall(p, "top"))
                 }
             }
         }
         walls.splice(idx, 1)
     }
 }
-
-function calculateWall(point, type = "") {
+// 将该point所对应的墙找出,排除type类型
+function findWall(point, type = "") {
     let ary = []
     if (point.x != 0 && type != "left") {
         ary.push(`${point.x}_${point.y}_left`)
@@ -169,7 +170,6 @@ function calculateWall(point, type = "") {
     }
     return ary
 }
-
 function rectClick(x, y) {
     state.endPoint = new Point(x, y)
     clearCanvas()
@@ -222,13 +222,6 @@ function clearCanvas() {
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 }
-function astarPath() {
-    let openAry = [state.startPoint]
-    let closeAry = []
-    const minNum = Math.abs(state.startPoint.x - state.endPoint.x) + Math.abs(state.startPoint.y - state.endPoint.y)
-    
-
-}
 function dfsPath() {
     let path = [state.startPoint]
     let currentP = path[0]
@@ -258,6 +251,24 @@ function dfsPath() {
             }
             dfs()
         }
+    }
+}
+function astarPath() {
+    let openAry = [
+        {
+            x: state.startPoint.x,
+            y: state.startPoint.y,
+            priority: 0,
+        },
+    ]
+    let closeAry = []
+    const defaultDistance = Math.abs(state.startPoint.x - state.endPoint.x) + Math.abs(state.startPoint.y - state.endPoint.y)
+    astar()
+    function astar() {
+        openAry.sort((a, b) => a.priority < b.priority)
+        const currentO = openAry[0]
+        closeAry.push(openAry.splice(0, 1))
+        const rect = document.getElementById(`rect_${currentO.x}_${currentO.y}`)
     }
 }
 </script>

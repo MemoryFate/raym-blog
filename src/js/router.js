@@ -3,7 +3,7 @@ import Home from "@/views/Home.vue"
 import Maze from "@/views/Game/Maze.vue"
 const routes = [
     { path: "/", component: Home },
-    { path: "/Maze", component: Maze },
+    { path: "/Game/Maze", component: Maze },
 ]
 
 const router = createRouter({
