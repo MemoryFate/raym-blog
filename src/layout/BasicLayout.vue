@@ -1,9 +1,7 @@
 <template>
     <a-layout class="layout">
         <a-layout-header>
-            <div class="logo">
-                RayM Blog
-            </div>
+            <div class="logo">RayM Blog</div>
         </a-layout-header>
         <a-layout-content class="layout-content">
             <router-view></router-view>

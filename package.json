@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
-        "upload": "cd dist && scp -r ./ bwg:/home/Oi2GF4FnYbF_0/HTML/raym-blog"
+        "upload": "vite build && scp -r ./dist bwg:/home/Oi2GF4FnYbF_0/HTML/raym-blog"
     },
     "dependencies": {
         "ant-design-vue": "^4.2.3",
