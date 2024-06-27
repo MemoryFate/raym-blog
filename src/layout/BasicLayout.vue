@@ -28,6 +28,7 @@
 
     .layout-content {
         padding: 20px;
+        min-height: 80vh;
     }
 }
 </style>
