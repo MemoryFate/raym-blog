@@ -1,15 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router"
-import Home from "@/views/Home.vue"
-import Maze from "@/views/Game/Maze.vue"
-import Tools from "@/views/Tools/index.vue"
-import text2qrcode from "@/views/Tools/text2qrcode.vue"
-import randomstr from "@/views/Tools/randomstr.vue"
+
 const routes = [
-    { path: "/index", component: Home, name: "home" },
-    { path: "/Game/Maze", component: Maze, name: "Maze" },
-    { path: "/Tools/", component: Tools, name: "Tools" },
-    { path: "/Tools/text2qrcode", component: text2qrcode, name: "text2qrcode" },
-    { path: "/Tools/randomstr", component: randomstr, name: "randomstr" },
+    { path: "/index", component: () => import("@/views/Home.vue"), name: "home" },
+    { path: "/Game/Maze", component: () => import("@/views/Game/Maze.vue"), name: "Maze" },
+    { path: "/Tools/", component: () => import("@/views/Tools/index.vue"), name: "Tools" },
+    { path: "/Tools/text2qrcode", component: () => import("@/views/Tools/text2qrcode.vue"), name: "text2qrcode" },
+    { path: "/Tools/randomstr", component: () => import("@/views/Tools/randomstr.vue"), name: "randomstr" },
 ]
 
 const router = createRouter({

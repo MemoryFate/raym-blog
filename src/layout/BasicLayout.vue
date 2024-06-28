@@ -1,12 +1,12 @@
 <template>
     <a-layout class="layout">
         <a-layout-header>
-            <div class="logo">RayM Blog</div>
+            <div class="logo">RayM</div>
         </a-layout-header>
         <a-layout-content class="layout-content">
             <router-view></router-view>
         </a-layout-content>
-        <a-layout-footer> 2024 RayM Blog </a-layout-footer>
+        <a-layout-footer>RayM®</a-layout-footer>
     </a-layout>
 </template>
 

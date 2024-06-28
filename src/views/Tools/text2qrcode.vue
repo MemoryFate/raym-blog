@@ -29,11 +29,11 @@
             </a-form-item>
             <a-form-item>
                 <a-button type="primary" style="float: right" @click="convertQRCode()">确定</a-button>
-                <a-button type="" style="float: right; margin-right: 20px" @click="reset()">重置</a-button>
+                <a-button type="primary" ghost style="float: right; margin-right: 20px" @click="reset()">重置</a-button>
             </a-form-item>
             <a-form-item label="结果:">
                 <div style="display: flex; flex-direction: column; align-items: center; background-color: white; padding: 10px">
-                    <canvas id="qrcode" :height="data.formData.pixel" :width="data.formData.pixel" style="box-shadow: gray 0 0 4px 1px"></canvas>
+                    <canvas id="qrcode" :height="data.formData.pixel" :width="data.formData.pixel" style="box-shadow: #32a1ff5c 0 0 4px 1px"></canvas>
                     <a v-if="data.showCopy" @click="copyToClipBoard()" style="margin: 10px">点击复制二维码到剪贴板</a>
                 </div>
             </a-form-item>
