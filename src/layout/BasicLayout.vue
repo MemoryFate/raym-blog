@@ -35,8 +35,8 @@
     }
     .layout-content {
         margin: 0 auto;
-        min-width: 600px;
-        width: 40vw;
+        min-width: 900px;
+        width: 80vw;
         padding: 20px;
         min-height: calc(100vh - 88px);
     }
