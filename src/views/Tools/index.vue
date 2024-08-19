@@ -1,15 +1,11 @@
 <template>
-    <a-list :grid="{ gutter: 16, column: 4 }" :data-source="data.menus">
-        <template #renderItem="{ item }">
-            <a-list-item>
-                <a @click="navTo(item)">
-                    <a-card :title="item.title">
-                        {{ item.content }}
-                    </a-card>
-                </a>
-            </a-list-item>
-        </template>
-    </a-list>
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px">
+        <a @click="navTo(item)" v-for="(item, index) in data.menus" :key="index" style="width: 200px">
+            <a-card :title="item.title" bodyStyle="height: 100px;overflow: hidden;white-space: wrap;text-overflow: ellipsis;">
+                {{ item.content }}
+            </a-card>
+        </a>
+    </div>
 </template>
 <script setup>
 import { reactive, getCurrentInstance } from "vue"

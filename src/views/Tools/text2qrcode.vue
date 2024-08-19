@@ -83,8 +83,8 @@ function convertQRCode() {
             canvas,
             values.text,
             {
-                height: 600,
-                width: 600,
+                height: values.pixel,
+                width: values.pixel,
                 errorCorrectionLevel: values.level,
             },
             err => {

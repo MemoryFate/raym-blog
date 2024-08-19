@@ -4,7 +4,9 @@
             <div class="logo">RayM</div>
         </a-layout-header>
         <a-layout-content class="layout-content">
-            <router-view></router-view>
+            <div class="layout-content-div">
+                <router-view></router-view>
+            </div>
         </a-layout-content>
         <a-layout-footer class="layout-footer">
             <div>RayM®</div>
@@ -24,21 +26,29 @@
 }
 
 .layout {
-    margin: 0 auto;
-    background-image: url("@/assets/background.jpg");
-    background-position: 0 0;
-    background-repeat: repeat-x;
-    background-size: cover;
+    min-width: 1400px;
+    width: 100vw;
 
     .layout-header {
         height: 44px;
     }
     .layout-content {
         margin: 0 auto;
-        min-width: 900px;
-        width: 80vw;
         padding: 20px;
         min-height: calc(100vh - 88px);
+        width: 100%;
+        background-image: url("@/assets/background.jpg");
+        background-position: 0 0;
+        background-repeat: repeat-x;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .layout-content-div {
+            width: 80vw;
+            min-width: 800px;
+        }
     }
     .layout-footer {
         padding: 0 20px;
