@@ -13,14 +13,9 @@ const { proxy } = getCurrentInstance()
 const data = reactive({
     menus: [
         {
-            title: "二维码生成",
-            content: "根据文字转换为二维码",
-            path: "/Tools/text2qrcode",
-        },
-        {
-            title: "字符串生成",
-            content: "随机生成指定条件的字符串",
-            path: "/Tools/randomstr",
+            title: "Socket通信",
+            content: "扫码连接后传输数据",
+            path: "/Demo/SocketDemo",
         },
     ],
 })
