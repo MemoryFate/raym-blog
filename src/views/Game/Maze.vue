@@ -81,8 +81,8 @@ document.addEventListener("keydown", e => {
     state.startPoint = new Point(x, y)
 })
 function initRect() {
-    state.rows = document.getElementById("maze_area").clientHeight / rectSize
-    state.cols = document.getElementById("maze_area").clientWidth / rectSize
+    state.rows = document.getElementById("canvas").clientHeight / rectSize
+    state.cols = document.getElementById("canvas").clientWidth / rectSize
     for (let i = 0; i < state.rows; i++) {
         var ary = []
         for (let j = 0; j < state.cols; j++) {
@@ -181,7 +181,7 @@ function drawArrow(start, end) {
     const theta = 30 // 箭头夹角
     const headlen = rectSize / 4 // 箭头边长
     ctx.lineWidth = 0.5
-    ctx.strokeStyle = "#32a1ff"
+    ctx.strokeStyle = "#ddd"
     var fromX = start.x * rectSize + rectSize / 2,
         fromY = start.y * rectSize + rectSize / 2,
         toX = end.x * rectSize + rectSize / 2,
@@ -283,6 +283,7 @@ function astarPath() {
 .content {
     border: 1px solid;
     margin: auto;
+    box-sizing: content-box;
 }
 
 .canvas {

@@ -12,6 +12,7 @@ const routes = [
 
     { path: "/Demo/", component: () => import("@/views/Demo/index.vue"), name: "Demo" },
     { path: "/Demo/SocketDemo", component: () => import("@/views/Demo/SocketDemo.vue"), name: "socket-demo" },
+    { path: "/Demo/SocketClientDemo", component: () => import("@/views/Demo/SocketClientDemo.vue"), name: "socket-client-demo" },
 ]
 
 const router = createRouter({
