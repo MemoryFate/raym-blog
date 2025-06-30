@@ -6,8 +6,7 @@
     "scripts": {
         "dev": "vite --host",
         "build": "vite build",
-        "preview": "vite preview",
-        "upload": "vite build && scp -r ./dist bwg:/home/Oi2GF4FnYbF_0/HTML/raym-blog"
+        "preview": "vite preview"
     },
     "dependencies": {
         "ant-design-vue": "^4.2.3",
@@ -16,11 +15,13 @@
         "qrcode": "^1.5.3",
         "vue": "^3.4.21",
         "vue-router": "^4.3.2",
-        "ws": "^8.18.0"
+        "ws": "^8.18.0",
+        "esbuild": ">=0.25.0"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^5.0.4",
         "sass": "^1.77.4",
-        "vite": "^5.2.0"
+        "vite": "^5.2.0",
+        "esbuild": ">=0.25.0"
     }
 }
