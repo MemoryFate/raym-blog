@@ -30,7 +30,6 @@ const data = reactive({
     ],
 })
 function navTo(item) {
-    console.log(proxy.$router)
     proxy.$router.push({ path: item.path })
 }
 </script>
