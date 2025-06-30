@@ -22,6 +22,11 @@ const data = reactive({
             content: "随机生成指定条件的字符串",
             path: "/Tools/randomstr",
         },
+        {
+            title: "aes-gcm",
+            content: "aes-gcm加密解密",
+            path: "/Tools/aes-gcm",
+        },
     ],
 })
 function navTo(item) {

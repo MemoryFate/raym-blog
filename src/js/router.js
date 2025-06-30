@@ -9,6 +9,7 @@ const routes = [
     { path: "/Tools/", component: () => import("@/views/Tools/index.vue"), name: "Tools" },
     { path: "/Tools/text2qrcode", component: () => import("@/views/Tools/text2qrcode.vue"), name: "text2qrcode" },
     { path: "/Tools/randomstr", component: () => import("@/views/Tools/randomstr.vue"), name: "randomstr" },
+    { path: "/Tools/aes-gcm", component: () => import("@/views/Tools/aes-gcm.vue"), name: "aes-gcm" },
 
     { path: "/Demo/", component: () => import("@/views/Demo/index.vue"), name: "Demo" },
     { path: "/Demo/SocketDemo", component: () => import("@/views/Demo/SocketDemo.vue"), name: "socket-demo" },
