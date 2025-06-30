@@ -89,26 +89,50 @@ function Encrypt(word) {
   cipher.finish();
   const encrypted = cipher.output;
   const tag = cipher.mode.tag;
-  return btoa(iv + encrypted.data + tag.data).replaceAll(/[\r\n]/g, "");
+
+  const ivBytes = forge.util.createBuffer(iv).toHex();
+  const encryptedBytes = forge.util.createBuffer(encrypted.data).toHex();
+  const tagBytes = forge.util.createBuffer(tag.data).toHex();
+
+  // 合并为一个Uint8Array
+  const totalHex = ivBytes + encryptedBytes + tagBytes;
+  const totalBytes = new Uint8Array(
+    totalHex.match(/.{2}/g).map((byte) => parseInt(byte, 16))
+  );
+
+  // base64编码
+  return btoa(String.fromCharCode.apply(null, totalBytes)).replace(
+    /[\r\n]/g,
+    ""
+  );
 }
 
 /**
  * AES 解密 ：字符串 key iv  返回base64
  */
+/**
+ * AES 解密
+ * @param {string} word - 需要解密的Base64字符串
+ * @returns {string|null} 解密后的明文字符串或错误提示
+ */
 function Decrypt(word) {
   // GCM
   if (!word) return null;
   try {
-    let datamsg = atob(word.replaceAll(/\s/g, "+"));
-    const iv = datamsg.slice(0, 12);
-    const tag = datamsg.slice(-16);
-    const d = datamsg.slice(12, datamsg.length - 16);
+    // 移除换行符和回车符
+    let datamsg = atob(word.replace(/[\r\n]/g, "").replace(/\s/g, ""));
+    const buffer = forge.util.createBuffer(datamsg, "raw");
+    const iv = buffer.getBytes(12);
+    const ciphertextAndTagLength = buffer.length();
+    const ciphertextLength = ciphertextAndTagLength - 16;
+    const ciphertext = buffer.getBytes(ciphertextLength);
+    const tag = buffer.getBytes(16);
     const decipher = forge.cipher.createDecipher("AES-GCM", data.key);
     decipher.start({ iv: iv, tag: tag });
-    decipher.update(forge.util.createBuffer(d));
+    decipher.update(forge.util.createBuffer(ciphertext));
     const pass = decipher.finish();
     if (pass) {
-      return decipher.output.toString();
+      return forge.util.decodeUtf8(decipher.output.getBytes());
     } else {
       return "解密失败，请检查输入内容";
     }
