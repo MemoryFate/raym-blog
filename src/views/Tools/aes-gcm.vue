@@ -4,6 +4,12 @@
       <a-form-item name="key" label="秘钥">
         <a-input v-model:value="data.key" placeholder="请输入秘钥" />
       </a-form-item>
+      <a-form-item>
+        <a-radio-group v-model:value="data.type" button-style="solid">
+          <a-radio-button value="decrypt">解密</a-radio-button>
+          <a-radio-button value="encrypt">加密</a-radio-button>
+        </a-radio-group>
+      </a-form-item>
       <a-form-item name="input" label="输入">
         <a-textarea
           v-model:value="data.input"
@@ -26,26 +32,11 @@
           <CopyOutlined />
         </a-button>
       </a-form-item>
-      <a-form-item>
-        <a-button
-          type="primary"
-          style="float: right"
-          @click="data.output = Decrypt(data.input)"
-          >解密</a-button
-        >
-        <a-button
-          type="primary"
-          ghost
-          style="float: right; margin-right: 20px"
-          @click="data.output = Encrypt(data.input)"
-          >加密</a-button
-        >
-      </a-form-item>
     </a-form>
   </a-card>
 </template>
 <script setup>
-import { getCurrentInstance, onMounted, reactive, ref } from "vue";
+import { getCurrentInstance, onMounted, reactive, ref, watch } from "vue";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import forge from "node-forge";
@@ -54,8 +45,16 @@ const data = reactive({
   key: "1qaz2wsx3edc4rfv",
   input: "",
   output: "",
+  type: "decrypt"
 });
 
+watch(() => data.input, (val) => {
+  if (data.type === 'encrypt') {
+    data.output = Encrypt(val)
+  }else if (data.type === 'decrypt') {
+    data.output = Decrypt(val)
+  }
+}, {deep: true})
 const rules = {
   key: [
     {
