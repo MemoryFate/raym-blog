@@ -12,6 +12,24 @@
                     <a-radio-button value="H">极高</a-radio-button>
                 </a-radio-group>
             </a-form-item>
+            <a-form-item name="pixel" label="图标">
+                <a-row>
+                    <a-col :span="8">
+                        <a-upload
+                            list-type="picture-card"
+                            v-model:value="fileList"
+                            :before-upload="beforeUpload"
+                            :max-count="1"
+                        >
+                            <plus-outlined></plus-outlined>
+                            <div class="ant-upload-text">上传</div>
+                        </a-upload>
+                    </a-col>
+                    <a-col :offset="1">
+                        
+                    </a-col>
+                </a-row>
+            </a-form-item>
             <a-form-item name="pixel" label="分辨率">
                 <a-row>
                     <a-col :span="8">
@@ -44,10 +62,12 @@
 import { getCurrentInstance, onMounted, reactive, ref } from "vue"
 import QRCode from "qrcode"
 import { message } from "ant-design-vue"
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue'
 const { proxy, emit } = getCurrentInstance()
 const data = reactive({
     formData: { level: "L", pixel: "600" },
     showCopy: false,
+    fileList: []
 })
 const rules = {
     text: [
@@ -76,8 +96,14 @@ function reset() {
     data.formData = { level: "L", pixel: "600" }
 }
 
+function beforeUpload(file) {
+    data.fileList = [file]
+    return false;
+};
+
 function convertQRCode() {
     const canvas = document.getElementById("qrcode")
+    const ctx = canvas.getContext('2d')
     proxy.$refs.form.validateFields().then(values => {
         QRCode.toCanvas(
             canvas,
@@ -95,6 +121,28 @@ function convertQRCode() {
                 }
             }
         )
+        if (data.fileList.length > 0) {
+            const file = data.fileList[0]
+            const reader = new FileReader()
+            reader.onload = function (e) {
+                const img = new Image()
+                img.onload = function () {
+                    var iconSize = values.pixel / 5 // 图标大小
+                    var iconX = (canvas.width - iconSize) / 2; // 图标X坐标（居中）
+                    var iconY = (canvas.height - iconSize) / 2; // 图标Y坐标（居中）
+                    ctx.fillStyle = 'white'; // 设置填充颜色（可选）
+                    ctx.fillRect(iconX - 6, iconY - 6, iconSize+12, iconSize+12); // 在中心绘制矩形作为图标示例（可选）
+                    ctx.drawImage(img, iconX, iconY, iconSize, iconSize)
+                }
+                img.src = e.target.result
+            }
+            reader.readAsDataURL(file)
+        } else {
+            // drawIcon(ctx, values)
+        }
+    }).catch(err => {
+        message.error("请检查输入内容是否正确")
+        console.error(err)
     })
 }
 function copyToClipBoard(e) {

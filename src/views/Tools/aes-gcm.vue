@@ -5,7 +5,7 @@
         <a-input v-model:value="data.key" placeholder="请输入秘钥" />
       </a-form-item>
       <a-form-item>
-        <a-radio-group v-model:value="data.type" button-style="solid">
+        <a-radio-group v-model:value="data.type" button-style="solid" @change="typeChanged">
           <a-radio-button value="decrypt">解密</a-radio-button>
           <a-radio-button value="encrypt">加密</a-radio-button>
         </a-radio-group>
@@ -47,7 +47,6 @@ const data = reactive({
   output: "",
   type: "decrypt"
 });
-
 watch(() => data.input, (val) => {
   if (data.type === 'encrypt') {
     data.output = Encrypt(val)
@@ -76,10 +75,16 @@ const rules = {
   ],
 };
 
+function typeChanged(e) {
+  console.log(e)
+  data.input = ''
+}
+
 /**
  * AES加密 ：字符串 key iv  返回base64
  */
 function Encrypt(word) {
+  if (!word) return
   // GCM
   const iv = forge.random.getBytesSync(12); // 生成随机iv 12字节
   const cipher = forge.cipher.createCipher("AES-GCM", data.key); // 生成AES-GCM模式的cipher对象 并传入密钥
@@ -119,7 +124,7 @@ function Decrypt(word) {
   if (!word) return null;
   try {
     // 移除换行符和回车符
-    let datamsg = atob(word.replace(/[\r\n]/g, "").replace(/\s/g, ""));
+    let datamsg = atob(word.replace(/[\r\n]/g, "").replace(/\s/g, "+"));
     const buffer = forge.util.createBuffer(datamsg, "raw");
     const iv = buffer.getBytes(12);
     const ciphertextAndTagLength = buffer.length();
