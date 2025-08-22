@@ -123,8 +123,8 @@ function Decrypt(word) {
   // GCM
   if (!word) return null;
   try {
-    // 移除换行符和回车符
-    let datamsg = atob(word.replace(/[\r\n]/g, "").replace(/\s/g, "+"));
+    let datamsg = atob(word);
+    console.log(datamsg)
     const buffer = forge.util.createBuffer(datamsg, "raw");
     const iv = buffer.getBytes(12);
     const ciphertextAndTagLength = buffer.length();
@@ -141,6 +141,7 @@ function Decrypt(word) {
       return "解密失败，请检查输入内容";
     }
   } catch (error) {
+    console.log(error);
     return "解密失败，请检查输入内容";
   }
 }
