@@ -145,7 +145,7 @@ function convertQRCode() {
         console.error(err)
     })
 }
-function copyToClipBoard(e) {
+function copyToClipBoard() {
     const canvas = document.getElementById("qrcode")
     canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]))
     message.info("复制成功")
