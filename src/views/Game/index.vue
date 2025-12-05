@@ -17,11 +17,16 @@ const data = reactive({
             content: "随机迷宫生成及寻路逻辑",
             path: "/Game/Maze",
         },
+        {
+            title: "数独",
+            content: "随机数独生成及解题逻辑",
+            path: "/Game/Sudoku",
+        },
     ],
 })
 function navTo(item) {
     console.log(proxy.$router)
-    proxy.$router.push({ path: item.path })
+    proxy.$router.push({ path: item.path, component: item.component })
 }
 </script>
 <style lang="scss" scoped>

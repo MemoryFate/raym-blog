@@ -23,6 +23,11 @@ const data = reactive({
             content: "游戏",
             path: "/Game",
         },
+        {
+            title: "Demo",
+            content: "Demo",
+            path: "/Demo",
+        },
     ],
 })
 function navTo(item) {
