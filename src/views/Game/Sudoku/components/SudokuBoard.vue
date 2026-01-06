@@ -1,6 +1,6 @@
 <template>
   <div class="board">
-    <div v-for="(row, r) in puzzle" :key="r" class="row">
+    <div v-for="(row, r) in puzzle" :key="r" class="rows">
       <div
         v-for="(cell, c) in row"
         :key="c"
@@ -27,11 +27,11 @@ defineProps({
 
 <style scoped>
 .board {
-  display: flex;
+  display: block;
   flex-direction: column;
   border: 4px solid #000;
 }
-.row {
+.rows {
   display: flex;
 }
 .cell {
@@ -42,9 +42,15 @@ defineProps({
   font-size: 22px;
   width: 40px;
   height: 40px;
+  box-sizing: border-box;
 }
+.cell:hover {
+  background-color: #f0f0f0;
+}
+
 .cell.fixed {
   font-weight: bold;
+  background-color: #f0f0f0;
 }
 .cell.line-top {
   border-top: 2px solid #000;

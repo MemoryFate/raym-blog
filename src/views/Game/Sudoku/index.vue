@@ -10,8 +10,9 @@
         </a-radio-group>
         <a-button type="primary" style="margin-left: 20px" @click="newGame(data.model)">新游戏</a-button>
       </a-row>
-
-      <SudokuBoard id="board" :puzzle="puzzle" />
+      <div id="board" style="padding: 20px;">
+        <SudokuBoard :puzzle="puzzle" />
+      </div>
       <a @click="copyToClipBoard()" style="margin: 10px">点击复制二维码到剪贴板</a>
     </div>
   </a-card>
@@ -53,5 +54,6 @@ function copyToClipBoard() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  box-sizing: content-box;
 }
 </style>
