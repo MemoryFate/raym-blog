@@ -1,7 +1,7 @@
 <template>
   <a-breadcrumb style="margin: 14px auto;" separator=">">
-    <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
-    <a-breadcrumb-item><a href="./#/Tools">Tools</a></a-breadcrumb-item>
+    <a-breadcrumb-item><a href="./#/">首页</a></a-breadcrumb-item>
+    <a-breadcrumb-item><a href="./#/Tools">工具</a></a-breadcrumb-item>
     <a-breadcrumb-item>AES-GCM</a-breadcrumb-item>
   </a-breadcrumb>
   <a-card title="AES-GCM" class="content">

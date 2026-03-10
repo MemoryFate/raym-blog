@@ -1,6 +1,6 @@
 <template>
     <a-breadcrumb style="margin: 14px auto;" separator=">">
-        <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+        <a-breadcrumb-item><a href="./#/">首页</a></a-breadcrumb-item>
         <a-breadcrumb-item>游戏</a-breadcrumb-item>
     </a-breadcrumb>
     <div class="content">

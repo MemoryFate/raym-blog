@@ -1,6 +1,6 @@
 <template>
     <a-breadcrumb style="margin: 14px auto;" separator=">">
-        <a-breadcrumb-item>Tools</a-breadcrumb-item>
+        <a-breadcrumb-item>首页</a-breadcrumb-item>
     </a-breadcrumb>
     <div class="content">
         <a @click="navTo(item)" v-for="(item, index) in data.menus" :key="index" style="width: 200px">
