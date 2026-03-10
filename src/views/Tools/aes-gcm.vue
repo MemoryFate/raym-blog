@@ -1,4 +1,9 @@
 <template>
+  <a-breadcrumb style="margin: 14px auto;" separator=">">
+    <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+    <a-breadcrumb-item><a href="./#/Tools">Tools</a></a-breadcrumb-item>
+    <a-breadcrumb-item>AES-GCM</a-breadcrumb-item>
+  </a-breadcrumb>
   <a-card title="AES-GCM" class="content">
     <a-form ref="form" layout="vertical" :rules="rules" :model="data">
       <a-form-item name="key" label="秘钥">
@@ -11,24 +16,11 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item name="input" label="输入">
-        <a-textarea
-          v-model:value="data.input"
-          placeholder="请输入要转码的文本"
-          :rows="4"
-        />
+        <a-textarea v-model:value="data.input" placeholder="请输入要转码的文本" :rows="4" />
       </a-form-item>
       <a-form-item name="output" label="输出">
-        <a-textarea
-          v-model:value="data.output"
-          placeholder="输出"
-          :rows="4"
-          disabled
-        />
-        <a-button
-          type="text"
-          shape="circle"
-          @click="copyToClipBoard(data.output)"
-        >
+        <a-textarea v-model:value="data.output" placeholder="输出" :rows="4" disabled />
+        <a-button type="text" shape="circle" @click="copyToClipBoard(data.output)">
           <CopyOutlined />
         </a-button>
       </a-form-item>
@@ -50,10 +42,10 @@ const data = reactive({
 watch(() => data.input, (val) => {
   if (data.type === 'encrypt') {
     data.output = Encrypt(val)
-  }else if (data.type === 'decrypt') {
+  } else if (data.type === 'decrypt') {
     data.output = Decrypt(val)
   }
-}, {deep: true})
+}, { deep: true })
 const rules = {
   key: [
     {

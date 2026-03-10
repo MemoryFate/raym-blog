@@ -1,4 +1,9 @@
 <template>
+    <a-breadcrumb style="margin: 14px auto;" separator=">">
+        <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+        <a-breadcrumb-item><a href="./#/Game">游戏</a></a-breadcrumb-item>
+        <a-breadcrumb-item>迷宫</a-breadcrumb-item>
+    </a-breadcrumb>
     <div class="content" id="maze_area">
         <canvas class="canvas" id="canvas" width="800" height="800"></canvas>
         <div style="z-index: 1; position: inherit">

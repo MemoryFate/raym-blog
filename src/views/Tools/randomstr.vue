@@ -1,4 +1,9 @@
 <template>
+  <a-breadcrumb style="margin: 14px auto;" separator=">">
+    <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+    <a-breadcrumb-item><a href="./#/Tools">Tools</a></a-breadcrumb-item>
+    <a-breadcrumb-item>字符串生成</a-breadcrumb-item>
+  </a-breadcrumb>
   <a-card title="字符串生成" class="content">
     <a-form ref="form" layout="vertical" :rules="rules" :model="data.formData">
       <a-form-item name="strLength" label="长度">
@@ -12,13 +17,8 @@
             </a-radio-group>
           </a-col>
           <a-col>
-            <a-form-item-rest
-              ><a-input-number
-                v-model:value="data.formData.strLength"
-                min="1"
-                max="1024"
-              ></a-input-number
-            ></a-form-item-rest>
+            <a-form-item-rest><a-input-number v-model:value="data.formData.strLength" min="1"
+                max="1024"></a-input-number></a-form-item-rest>
           </a-col>
         </a-row>
       </a-form-item>
@@ -26,16 +26,8 @@
         <a-checkbox-group v-model:value="data.formData.type" :options="types" />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" style="float: right" @click="confirm()"
-          >确定</a-button
-        >
-        <a-button
-          type="primary"
-          ghost
-          style="float: right; margin-right: 20px"
-          @click="reset()"
-          >重置</a-button
-        >
+        <a-button type="primary" style="float: right" @click="confirm()">确定</a-button>
+        <a-button type="primary" ghost style="float: right; margin-right: 20px" @click="reset()">重置</a-button>
       </a-form-item>
     </a-form>
     <a-form-item label="结果">
@@ -44,9 +36,9 @@
           <a-textarea :rows="4" :value="data.result"></a-textarea>
         </a-col>
         <a-col>
-          <a-button type="text" shape="circle" @click="copyToClipBoard"
-            ><CopyOutlined
-          /></a-button>
+          <a-button type="text" shape="circle" @click="copyToClipBoard">
+            <CopyOutlined />
+          </a-button>
         </a-col>
       </a-row>
     </a-form-item>

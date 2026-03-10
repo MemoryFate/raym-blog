@@ -1,4 +1,9 @@
 <template>
+  <a-breadcrumb style="margin: 14px auto;" separator=">">
+      <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+      <a-breadcrumb-item><a href="./#/Game">游戏</a></a-breadcrumb-item>
+      <a-breadcrumb-item>数独</a-breadcrumb-item>
+  </a-breadcrumb>
   <a-card>
     <div class="container">
       <a-row>

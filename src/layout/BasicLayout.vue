@@ -37,10 +37,7 @@
         padding: 20px;
         min-height: calc(100vh - 88px);
         width: 100%;
-        background-image: url("@/assets/background.jpg");
-        background-position: 0 0;
-        background-repeat: repeat-x;
-        background-size: cover;
+        background: #c3dbff;
         display: flex;
         flex-direction: column;
         align-items: center;

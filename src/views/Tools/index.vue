@@ -1,5 +1,9 @@
 <template>
-    <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px">
+    <a-breadcrumb style="margin: 14px auto;" separator=">">
+        <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+        <a-breadcrumb-item>Tools</a-breadcrumb-item>
+    </a-breadcrumb>
+    <div class="content">
         <a @click="navTo(item)" v-for="(item, index) in data.menus" :key="index" style="width: 200px">
             <a-card :title="item.title" :body-style="{height: '100px', overflow: 'hidden', whiteSpace: 'wrap', textOverflow: 'ellipsis'}">
                 {{ item.content }}
@@ -34,14 +38,21 @@ function navTo(item) {
 }
 </script>
 <style lang="scss" scoped>
-a {
-    transition: all 0.1s ease-in-out;
-}
+.content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
 
-a:hover {
-    transform: scale(1.05);
-    box-shadow: #32a1ff5c 0 0 20px 2px;
-    display: block;
-    border-radius: 10px;
+    a {
+        transition: all 0.1s ease-in-out;
+    }
+
+    a:hover {
+        transform: scale(1.05);
+        box-shadow: #32a1ff5c 0 0 20px 2px;
+        display: block;
+        border-radius: 10px;
+    }
 }
 </style>

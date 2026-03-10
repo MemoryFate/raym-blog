@@ -1,4 +1,9 @@
 <template>
+  <a-breadcrumb style="margin: 14px auto;" separator=">">
+    <a-breadcrumb-item><a href="./#/">Home</a></a-breadcrumb-item>
+    <a-breadcrumb-item><a href="./#/Tools">Tools</a></a-breadcrumb-item>
+    <a-breadcrumb-item>二维码生成</a-breadcrumb-item>
+  </a-breadcrumb>    
     <a-card title="二维码生成" class="content">
         <a-form ref="form" layout="vertical" :rules="rules" :model="data.formData">
             <a-form-item name="text" label="文本">
