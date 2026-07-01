@@ -34,10 +34,15 @@ import { message } from "ant-design-vue";
 import forge from "node-forge";
 const { proxy, emit } = getCurrentInstance();
 const data = reactive({
-  key: "1qaz2wsx3edc4rfv",
+  key: localStorage.getItem("aes-gcm-key") || "1qaz2wsx3edc4rfv",
   input: "",
   output: "",
   type: "decrypt"
+});
+
+// 缓存 key 到 localStorage
+watch(() => data.key, (val) => {
+  localStorage.setItem("aes-gcm-key", val);
 });
 watch(() => data.input, (val) => {
   if (data.type === 'encrypt') {
