@@ -34,7 +34,7 @@ import { message } from "ant-design-vue";
 import forge from "node-forge";
 const { proxy, emit } = getCurrentInstance();
 const data = reactive({
-  key: localStorage.getItem("aes-gcm-key") || "1qaz2wsx3edc4rfv",
+  key: localStorage.getItem("aes-gcm-key") || "IszSeX2SAAebo2hA",
   input: "",
   output: "",
   type: "decrypt"
