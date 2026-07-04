@@ -31,6 +31,11 @@ const data = reactive({
             content: "aes-gcm加密解密",
             path: "/Tools/aes-gcm",
         },
+        {
+            title: "Base64",
+            content: "Base64与图片/视频互转",
+            path: "/Tools/base64",
+        },
     ],
 })
 function navTo(item) {

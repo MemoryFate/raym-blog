@@ -25,6 +25,7 @@
 </template>
 <script setup>
 import { getCurrentInstance, nextTick, onMounted, reactive } from "vue"
+import { message } from "ant-design-vue"
 class Point {
     constructor(x = 0, y = 0) {
         this._x = x
@@ -178,43 +179,49 @@ function findWall(point, type = "") {
 function rectClick(x, y) {
     state.endPoint = new Point(x, y)
     clearCanvas()
-    dfsPath()
+    const selectedAlgo = document.querySelector('input[name="radio_group"]:checked').value
+    if (selectedAlgo === '1') {
+        dfsPath()
+    } else {
+        astarPath()
+    }
 }
 function drawArrow(start, end) {
     const canvas = document.getElementById("canvas")
     const ctx = canvas.getContext("2d")
-    const theta = 30 // 箭头夹角
     const headlen = rectSize / 4 // 箭头边长
-    ctx.lineWidth = 0.5
-    ctx.strokeStyle = "#ddd"
-    var fromX = start.x * rectSize + rectSize / 2,
-        fromY = start.y * rectSize + rectSize / 2,
-        toX = end.x * rectSize + rectSize / 2,
-        toY = end.y * rectSize + rectSize / 2
-    var angle = (Math.atan2(fromY - toY, fromX - toX) * 180) / Math.PI,
-        angle1 = ((angle + theta) * Math.PI) / 180,
-        angle2 = ((angle - theta) * Math.PI) / 180,
-        topX = headlen * Math.cos(angle1),
-        topY = headlen * Math.sin(angle1),
-        botX = headlen * Math.cos(angle2),
-        botY = headlen * Math.sin(angle2)
+
+    ctx.lineWidth = 1
+    ctx.strokeStyle = "#ff4444"
+    ctx.fillStyle = "#ff4444"
+
+    const fromX = start.x * rectSize + rectSize / 2
+    const fromY = start.y * rectSize + rectSize / 2
+    const toX = end.x * rectSize + rectSize / 2
+    const toY = end.y * rectSize + rectSize / 2
+
+    // 计算方向角度
+    const angle = Math.atan2(toY - fromY, toX - fromX)
+    const headAngle = Math.PI / 6 // 30度夹角
 
     ctx.save()
     ctx.beginPath()
 
-    var arrowX = fromX - topX,
-        arrowY = fromY - topY
-
-    ctx.moveTo(arrowX, arrowY)
+    // 绘制主线
     ctx.moveTo(fromX, fromY)
     ctx.lineTo(toX, toY)
-    arrowX = toX + topX
-    arrowY = toY + topY
-    ctx.moveTo(arrowX, arrowY)
-    ctx.lineTo(toX, toY)
-    arrowX = toX + botX
-    arrowY = toY + botY
-    ctx.lineTo(arrowX, arrowY)
+
+    // 绘制箭头头部
+    ctx.lineTo(
+        toX - headlen * Math.cos(angle - headAngle),
+        toY - headlen * Math.sin(angle - headAngle)
+    )
+    ctx.moveTo(toX, toY)
+    ctx.lineTo(
+        toX - headlen * Math.cos(angle + headAngle),
+        toY - headlen * Math.sin(angle + headAngle)
+    )
+
     ctx.stroke()
     ctx.restore()
 }
@@ -233,48 +240,132 @@ function dfsPath() {
     document.getElementById(`rect_${currentP.x}_${currentP.y}`).setAttribute("hasPoint1", "yes!")
     dfs()
     function dfs() {
-        if (currentP.x != state.endPoint.x || currentP.y != state.endPoint.y) {
-            const rect = document.getElementById(`rect_${currentP.x}_${currentP.y}`)
-            let nextP = undefined
-            if (rect.style.borderTop == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y - 1}`).getAttribute("hasPoint1")) {
-                nextP = new Point(currentP.x, currentP.y - 1)
-            } else if (rect.style.borderLeft == "none" && !document.getElementById(`rect_${currentP.x - 1}_${currentP.y}`).getAttribute("hasPoint1")) {
-                nextP = new Point(currentP.x - 1, currentP.y)
-            } else if (rect.style.borderRight == "none" && !document.getElementById(`rect_${currentP.x + 1}_${currentP.y}`).getAttribute("hasPoint1")) {
-                nextP = new Point(currentP.x + 1, currentP.y)
-            } else if (rect.style.borderBottom == "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y + 1}`).getAttribute("hasPoint1")) {
-                nextP = new Point(currentP.x, currentP.y + 1)
-            }
-            if (document.getElementById(`rect_${nextP?.x}_${nextP?.y}`)) {
-                document.getElementById(`rect_${nextP.x}_${nextP.y}`).setAttribute("hasPoint1", "yes!")
-                drawArrow(currentP, nextP)
-                path.push(nextP)
-                currentP = nextP
-            } else {
-                path.pop()
-                currentP = path[path.length - 1]
-            }
-            dfs()
+        if (!currentP) return
+        if (currentP.x === state.endPoint.x && currentP.y === state.endPoint.y) {
+            return
         }
+        const rect = document.getElementById(`rect_${currentP.x}_${currentP.y}`)
+        let nextP = undefined
+        if (rect.style.borderTopStyle === "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y - 1}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x, currentP.y - 1)
+        } else if (rect.style.borderLeftStyle === "none" && !document.getElementById(`rect_${currentP.x - 1}_${currentP.y}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x - 1, currentP.y)
+        } else if (rect.style.borderRightStyle === "none" && !document.getElementById(`rect_${currentP.x + 1}_${currentP.y}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x + 1, currentP.y)
+        } else if (rect.style.borderBottomStyle === "none" && !document.getElementById(`rect_${currentP.x}_${currentP.y + 1}`).getAttribute("hasPoint1")) {
+            nextP = new Point(currentP.x, currentP.y + 1)
+        }
+        if (nextP && document.getElementById(`rect_${nextP.x}_${nextP.y}`)) {
+            document.getElementById(`rect_${nextP.x}_${nextP.y}`).setAttribute("hasPoint1", "yes!")
+            drawArrow(currentP, nextP)
+            path.push(nextP)
+            currentP = nextP
+        } else {
+            path.pop()
+            currentP = path[path.length - 1]
+        }
+        dfs()
     }
 }
 function astarPath() {
-    let openAry = [
-        {
-            x: state.startPoint.x,
-            y: state.startPoint.y,
-            priority: 0,
-        },
-    ]
-    let closeAry = []
-    const defaultDistance = Math.abs(state.startPoint.x - state.endPoint.x) + Math.abs(state.startPoint.y - state.endPoint.y)
-    astar()
-    function astar() {
-        openAry.sort((a, b) => a.priority < b.priority)
-        const currentO = openAry[0]
-        closeAry.push(openAry.splice(0, 1))
-        const rect = document.getElementById(`rect_${currentO.x}_${currentO.y}`)
+    const start = state.startPoint
+    const end = state.endPoint
+
+    // 曼哈顿距离作为启发函数
+    const heuristic = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+
+    // 获取相邻可达格子
+    const getNeighbors = (point) => {
+        const neighbors = []
+        const rect = document.getElementById(`rect_${point.x}_${point.y}`)
+        if (rect.style.borderTopStyle === "none" && point.y > 0) {
+            neighbors.push({ x: point.x, y: point.y - 1 })
+        }
+        if (rect.style.borderBottomStyle === "none" && point.y < state.rows - 1) {
+            neighbors.push({ x: point.x, y: point.y + 1 })
+        }
+        if (rect.style.borderLeftStyle === "none" && point.x > 0) {
+            neighbors.push({ x: point.x - 1, y: point.y })
+        }
+        if (rect.style.borderRightStyle === "none" && point.x < state.cols - 1) {
+            neighbors.push({ x: point.x + 1, y: point.y })
+        }
+        return neighbors
     }
+
+    // Open 列表: { x, y, g, h, f, parent }
+    const openList = []
+    // Close 列表: Set 存储 "x,y" 字符串
+    const closeSet = new Set()
+
+    // 起点
+    const startNode = {
+        x: start.x,
+        y: start.y,
+        g: 0,
+        h: heuristic(start, end),
+        f: heuristic(start, end),
+        parent: null,
+    }
+    openList.push(startNode)
+
+    while (openList.length > 0) {
+        // 取出 f 值最小的节点
+        openList.sort((a, b) => a.f - b.f)
+        const current = openList.shift()
+
+        // 到达终点
+        if (current.x === end.x && current.y === end.y) {
+            // 绘制路径
+            const path = []
+            let node = current
+            while (node) {
+                path.unshift({ x: node.x, y: node.y })
+                node = node.parent
+            }
+            // 绘制箭头
+            for (let i = 0; i < path.length - 1; i++) {
+                drawArrow(path[i], path[i + 1])
+            }
+            return
+        }
+
+        closeSet.add(`${current.x},${current.y}`)
+
+        // 遍历邻居
+        const neighbors = getNeighbors(current)
+        for (const neighbor of neighbors) {
+            if (closeSet.has(`${neighbor.x},${neighbor.y}`)) {
+                continue
+            }
+
+            const g = current.g + 1
+            const h = heuristic(neighbor, end)
+            const f = g + h
+
+            // 检查是否已在 openList 中
+            const existingIndex = openList.findIndex(n => n.x === neighbor.x && n.y === neighbor.y)
+            if (existingIndex !== -1) {
+                if (g < openList[existingIndex].g) {
+                    openList[existingIndex].g = g
+                    openList[existingIndex].f = f
+                    openList[existingIndex].parent = current
+                }
+            } else {
+                openList.push({
+                    x: neighbor.x,
+                    y: neighbor.y,
+                    g,
+                    h,
+                    f,
+                    parent: current,
+                })
+            }
+        }
+    }
+
+    // 未找到路径
+    message.error("未找到路径")
 }
 </script>
 <style lang="scss" scoped>
