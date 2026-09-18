@@ -9,8 +9,8 @@
                     and small experiments that make the internet feel a little more human.
                 </p>
                 <div class="actions">
-                    <RouterLink class="primary" :to="{ path: '/', hash: '#projects' }">View projects ↗</RouterLink>
-                    <RouterLink class="secondary" to="/Game">Enter the lab ›</RouterLink>
+                    <RouterLink class="primary" to="/Projects">View projects ↗</RouterLink>
+                    <RouterLink class="secondary" to="/Lab">Enter the lab ›</RouterLink>
                 </div>
                 <p class="mono hero-index">01 — PERSONAL SITE&nbsp;&nbsp;&nbsp;&nbsp;02 — DIGITAL GARDEN</p>
             </div>
