@@ -1,57 +1,60 @@
 <template>
-    <a-layout class="layout">
-        <a-layout-header class="layout-header">
-            <div class="logo">RayM</div>
-        </a-layout-header>
-        <a-layout-content class="layout-content">
-            <div class="layout-content-div">
-                <router-view></router-view>
-            </div>
-        </a-layout-content>
-        <a-layout-footer class="layout-footer">
-            <div>RayM®</div>
-        </a-layout-footer>
-    </a-layout>
+    <div class="site-shell" :data-theme="theme">
+        <AtmosphereBackground :theme="theme" />
+        <div class="site-layer">
+            <SiteHeader />
+            <main class="site-main">
+                <router-view v-slot="{ Component }">
+                    <Transition name="route-fade" mode="out-in">
+                        <component :is="Component" />
+                    </Transition>
+                </router-view>
+            </main>
+            <SiteFooter />
+        </div>
+    </div>
 </template>
 
-<script setup></script>
-<style lang="scss" scoped>
-.logo {
-    float: left;
-    width: 80px;
-    color: white;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.3);
-    line-height: 44px;
+<script setup>
+import AtmosphereBackground from "@/components/visual/AtmosphereBackground.vue"
+import SiteFooter from "@/components/layout/SiteFooter.vue"
+import SiteHeader from "@/components/layout/SiteHeader.vue"
+import { useTimeTheme } from "@/composables/useTimeTheme.js"
+
+const { theme } = useTimeTheme()
+</script>
+
+<style scoped lang="scss">
+.site-shell {
+    position: relative;
+    min-height: 100vh;
+    color: var(--color-text-primary);
+    background: var(--color-bg-base);
+    transition: color 500ms ease, background 500ms ease;
 }
 
-.layout {
-    min-width: 1400px;
-    width: 100vw;
+.site-layer {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding-top: 18px;
+}
 
-    .layout-header {
-        height: 44px;
-    }
-    .layout-content {
-        margin: 0 auto;
-        padding: 20px;
-        min-height: calc(100vh - 88px);
-        width: 100%;
-        background: #c3dbff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+.site-main { min-height: calc(100vh - 210px); }
 
-        .layout-content-div {
-            width: 80vw;
-            min-width: 800px;
-        }
-    }
-    .layout-footer {
-        padding: 0 20px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-    }
+.route-fade-enter-active,
+.route-fade-leave-active { transition: opacity 180ms ease, transform 180ms ease; }
+
+.route-fade-enter-from,
+.route-fade-leave-to { opacity: 0; transform: translateY(5px); }
+
+@media (max-width: 760px) {
+    .site-layer { padding-top: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-shell,
+    .route-fade-enter-active,
+    .route-fade-leave-active { transition: none; }
 }
 </style>
