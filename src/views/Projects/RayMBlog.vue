@@ -1,0 +1,16 @@
+<template>
+    <article class="article">
+        <RouterLink class="back mono" to="/Projects">← Back to Projects</RouterLink>
+        <header><p class="eyebrow">PROJECT / PERSONAL WEB</p><h1>RayM Blog</h1><p>A personal homepage evolving into a time-aware developer lab for projects, tools, experiments, and notes.</p><div class="chips"><span>Vue 3</span><span>Vite</span><span>Canvas</span><span>Design tokens</span></div></header>
+        <NeonGlass class="hero" glow><p class="eyebrow">CASE STUDY</p><h2>From a small utility site to a personal lab.</h2><p>The redesign focuses on one coherent system: time-based atmosphere, high-contrast NeonGlass surfaces, modular information architecture, and responsive tools.</p></NeonGlass>
+        <section><p class="eyebrow">01 / PROBLEM</p><h2>The old structure worked, but the site had no clear identity.</h2><p>Tools, games, and demos accumulated over time. The redesign reframes them as one personal system rather than separate buckets with unrelated visual treatments.</p></section>
+        <div class="compare"><NeonGlass><p class="eyebrow">BEFORE</p><h3>Utility-first structure</h3><p>Basic shell · separate buckets · fixed blue styling · weak hierarchy.</p></NeonGlass><NeonGlass glow><p class="eyebrow">AFTER</p><h3>One Personal Lab system</h3><p>Time themes · NeonGlass surfaces · responsive hierarchy · consistent detail pages.</p></NeonGlass></div>
+        <section><p class="eyebrow">02 / SYSTEM</p><h2>A single visual language changes with time, not page type.</h2><p>Theme engine → background atmosphere → surface tokens → interaction states → responsive layout. The mood changes; the component grammar stays stable.</p></section>
+        <section><p class="eyebrow">03 / OUTCOME</p><h2>A design system ready to map directly into Vue.</h2><p>The implementation now has a shared time engine, dynamic atmosphere, NeonGlass surface states, and responsive page shells.</p></section>
+    </article>
+</template>
+<script setup>import NeonGlass from "@/components/ui/NeonGlass.vue"</script>
+<style scoped lang="scss">
+.article{width:min(980px,calc(100% - 40px));margin:54px auto 0}.back{color:var(--color-text-secondary);font-size:11px;text-decoration:none}.eyebrow{margin:0;color:var(--color-accent-primary);font-size:10px;letter-spacing:.14em}header{margin-top:44px}header h1{margin:16px 0;font-size:clamp(48px,7vw,72px);letter-spacing:-.05em}header>p:last-of-type{max-width:800px;color:var(--color-text-secondary);font-size:17px;line-height:1.7}.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.chips span{padding:7px 12px;border:1px solid var(--color-border-glow);border-radius:999px;color:var(--color-text-secondary);background:var(--color-chip-bg);font-size:11px}.hero{margin-top:54px;padding:28px;min-height:270px}.hero>*{position:relative;z-index:1}.hero h2,section h2{margin:18px 0;font-size:clamp(28px,4vw,38px);line-height:1.2}.hero p:last-child,section>p:last-child,.compare p:last-child{color:var(--color-text-secondary);line-height:1.75}.article section{margin-top:82px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}.compare>div{padding:24px}.compare h3{margin:14px 0;font-size:23px}
+@media(max-width:700px){.article{margin-top:40px}.compare{grid-template-columns:1fr}.article section{margin-top:64px}}
+</style>
