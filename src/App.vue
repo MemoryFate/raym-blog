@@ -1,12 +1,7 @@
 <template>
-    <div id="app">
-        <BasicLayout />
-    </div>
+    <BasicLayout />
 </template>
 
 <script setup>
 import BasicLayout from "@/layout/BasicLayout.vue"
 </script>
-
-<style>
-</style>
