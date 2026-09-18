@@ -1,164 +1,233 @@
 <template>
-  <a-breadcrumb style="margin: 14px auto;" separator=">">
-    <a-breadcrumb-item><a href="./#/">首页</a></a-breadcrumb-item>
-    <a-breadcrumb-item><a href="./#/Tools">工具</a></a-breadcrumb-item>
-    <a-breadcrumb-item>二维码生成</a-breadcrumb-item>
-  </a-breadcrumb>    
-    <a-card title="二维码生成" class="content">
-        <a-form ref="form" layout="vertical" :rules="rules" :model="data.formData">
-            <a-form-item name="text" label="文本">
-                <a-textarea v-model:value="data.formData.text" placeholder="请输入要转码的文本" :rows="4" />
-            </a-form-item>
-            <a-form-item name="level" label="识别度">
-                <a-radio-group v-model:value="data.formData.level">
-                    <a-radio-button value="L">低</a-radio-button>
-                    <a-radio-button value="M">中</a-radio-button>
-                    <a-radio-button value="Q">高</a-radio-button>
-                    <a-radio-button value="H">极高</a-radio-button>
-                </a-radio-group>
-            </a-form-item>
-            <a-form-item name="pixel" label="图标">
-                <a-row>
-                    <a-col :span="8">
+    <div class="tool-detail">
+        <RouterLink class="back mono" to="/Tools">← 返回工具列表</RouterLink>
+
+        <header class="tool-head">
+            <div>
+                <p class="eyebrow">工具 / 二维码</p>
+                <h1>二维码生成器</h1>
+                <p>输入文本或链接，设置容错级别与尺寸，在浏览器中直接生成二维码。</p>
+            </div>
+            <span class="mono status">● 本地生成</span>
+        </header>
+
+        <div class="tool-layout">
+            <NeonGlass class="work-surface" glow>
+                <div class="surface-head">
+                    <div><p class="eyebrow">生成参数</p><h2>创建二维码</h2></div>
+                    <span class="mono">QR / 001</span>
+                </div>
+
+                <a-form ref="formRef" layout="vertical" :rules="rules" :model="data.formData">
+                    <a-form-item name="text" label="内容">
+                        <a-textarea
+                            v-model:value="data.formData.text"
+                            placeholder="输入文本、网址或其他内容"
+                            :rows="5"
+                        />
+                    </a-form-item>
+
+                    <div class="form-grid">
+                        <a-form-item name="level" label="容错级别">
+                            <a-radio-group v-model:value="data.formData.level">
+                                <a-radio-button value="L">低</a-radio-button>
+                                <a-radio-button value="M">中</a-radio-button>
+                                <a-radio-button value="Q">高</a-radio-button>
+                                <a-radio-button value="H">极高</a-radio-button>
+                            </a-radio-group>
+                        </a-form-item>
+
+                        <a-form-item name="pixel" label="尺寸">
+                            <div class="size-row">
+                                <a-input-number v-model:value="data.formData.pixel" :min="120" :max="900" :step="20" />
+                                <span class="mono">px</span>
+                            </div>
+                        </a-form-item>
+                    </div>
+
+                    <a-form-item label="中心图标（可选）">
                         <a-upload
+                            v-model:file-list="data.fileList"
                             list-type="picture-card"
-                            v-model:value="fileList"
                             :before-upload="beforeUpload"
                             :max-count="1"
+                            accept="image/*"
                         >
-                            <plus-outlined></plus-outlined>
-                            <div class="ant-upload-text">上传</div>
+                            <plus-outlined />
+                            <div class="upload-copy">选择图片</div>
                         </a-upload>
-                    </a-col>
-                    <a-col :offset="1">
-                        
-                    </a-col>
-                </a-row>
-            </a-form-item>
-            <a-form-item name="pixel" label="分辨率">
-                <a-row>
-                    <a-col :span="8">
-                        <a-radio-group v-model:value="data.formData.pixel">
-                            <a-radio-button value="60">60</a-radio-button>
-                            <a-radio-button value="200">200</a-radio-button>
-                            <a-radio-button value="400">400</a-radio-button>
-                            <a-radio-button value="600">600</a-radio-button>
-                        </a-radio-group>
-                    </a-col>
-                    <a-col :offset="1">
-                        <a-form-item-rest><a-input-number v-model:value="data.formData.pixel" min="60" max="900"></a-input-number></a-form-item-rest>
-                    </a-col>
-                </a-row>
-            </a-form-item>
-            <a-form-item>
-                <a-button type="primary" style="float: right" @click="convertQRCode()">确定</a-button>
-                <a-button type="primary" ghost style="float: right; margin-right: 20px" @click="reset()">重置</a-button>
-            </a-form-item>
-            <a-form-item label="结果:">
-                <div style="display: flex; flex-direction: column; align-items: center; background-color: white; padding: 10px">
-                    <canvas id="qrcode" :height="data.formData.pixel" :width="data.formData.pixel" style="box-shadow: #32a1ff5c 0 0 4px 1px"></canvas>
-                    <a v-if="data.showCopy" @click="copyToClipBoard()" style="margin: 10px">点击复制二维码到剪贴板</a>
+                    </a-form-item>
+
+                    <div class="actions">
+                        <a-button type="primary" @click="convertQRCode">生成二维码</a-button>
+                        <a-button @click="reset">重置</a-button>
+                    </div>
+                </a-form>
+
+                <div class="result-block">
+                    <div class="result-head">
+                        <div><p class="eyebrow">生成结果</p><h3>{{ data.showCopy ? "二维码已生成" : "等待生成" }}</h3></div>
+                        <span class="mono">{{ data.formData.pixel }} × {{ data.formData.pixel }}</span>
+                    </div>
+
+                    <div class="qr-stage" :class="{ ready: data.showCopy }">
+                        <canvas
+                            id="qrcode"
+                            :height="data.formData.pixel"
+                            :width="data.formData.pixel"
+                        ></canvas>
+                        <div v-if="!data.showCopy" class="placeholder">
+                            <span>▦</span>
+                            <p>生成后将在这里预览</p>
+                        </div>
+                    </div>
+
+                    <div v-if="data.showCopy" class="result-actions">
+                        <button type="button" @click="copyToClipBoard">复制图片</button>
+                        <button type="button" @click="downloadQrCode">下载 PNG</button>
+                    </div>
                 </div>
-            </a-form-item>
-        </a-form>
-    </a-card>
+            </NeonGlass>
+
+            <aside class="side-stack">
+                <NeonGlass class="side-card">
+                    <p class="eyebrow">使用说明</p>
+                    <h3>容错越高，二维码越容易被识别</h3>
+                    <p>如果需要在二维码中心放 Logo，建议选择“高”或“极高”容错，并避免让图标覆盖过大的有效区域。</p>
+                </NeonGlass>
+
+                <NeonGlass class="side-card">
+                    <p class="eyebrow">隐私</p>
+                    <h3>内容不会上传到服务器</h3>
+                    <p>二维码生成过程直接在当前浏览器执行。你输入的文本与图片只参与本地绘制。</p>
+                </NeonGlass>
+            </aside>
+        </div>
+    </div>
 </template>
+
 <script setup>
-import { getCurrentInstance, onMounted, reactive, ref } from "vue"
+import { reactive, ref } from "vue"
 import QRCode from "qrcode"
 import { message } from "ant-design-vue"
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue'
-const { proxy, emit } = getCurrentInstance()
+import { PlusOutlined } from "@ant-design/icons-vue"
+import NeonGlass from "@/components/ui/NeonGlass.vue"
+
+const formRef = ref()
 const data = reactive({
-    formData: { level: "L", pixel: "600" },
+    formData: { text: "", level: "M", pixel: 400 },
     showCopy: false,
-    fileList: []
+    fileList: [],
 })
+
 const rules = {
-    text: [
-        {
-            required: true,
-            message: "请输入内容",
-            trigger: "submit",
-        },
-    ],
-    level: [
-        {
-            required: true,
-            trigger: "submit",
-        },
-    ],
-    pixel: [
-        {
-            required: true,
-            message: "请输入分辨率",
-            trigger: "submit",
-        },
-    ],
+    text: [{ required: true, message: "请输入需要生成二维码的内容", trigger: "change" }],
+    level: [{ required: true, message: "请选择容错级别", trigger: "change" }],
+    pixel: [{ required: true, message: "请输入二维码尺寸", trigger: "change" }],
 }
+
 function reset() {
+    data.formData = { text: "", level: "M", pixel: 400 }
+    data.fileList = []
     data.showCopy = false
-    data.formData = { level: "L", pixel: "600" }
+    const canvas = document.getElementById("qrcode")
+    const ctx = canvas?.getContext("2d")
+    if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
 }
 
 function beforeUpload(file) {
     data.fileList = [file]
-    return false;
-};
-
-function convertQRCode() {
-    const canvas = document.getElementById("qrcode")
-    const ctx = canvas.getContext('2d')
-    proxy.$refs.form.validateFields().then(values => {
-        QRCode.toCanvas(
-            canvas,
-            values.text,
-            {
-                height: values.pixel,
-                width: values.pixel,
-                errorCorrectionLevel: values.level,
-            },
-            err => {
-                if (!err) {
-                    data.showCopy = true
-                } else {
-                    message.error(err.message)
-                }
-            }
-        )
-        if (data.fileList.length > 0) {
-            const file = data.fileList[0]
-            const reader = new FileReader()
-            reader.onload = function (e) {
-                const img = new Image()
-                img.onload = function () {
-                    var iconSize = values.pixel / 5 // 图标大小
-                    var iconX = (canvas.width - iconSize) / 2; // 图标X坐标（居中）
-                    var iconY = (canvas.height - iconSize) / 2; // 图标Y坐标（居中）
-                    ctx.fillStyle = 'white'; // 设置填充颜色（可选）
-                    ctx.fillRect(iconX - 6, iconY - 6, iconSize+12, iconSize+12); // 在中心绘制矩形作为图标示例（可选）
-                    ctx.drawImage(img, iconX, iconY, iconSize, iconSize)
-                }
-                img.src = e.target.result
-            }
-            reader.readAsDataURL(file)
-        } else {
-            // drawIcon(ctx, values)
-        }
-    }).catch(err => {
-        message.error("请检查输入内容是否正确")
-        console.error(err)
-    })
+    return false
 }
-function copyToClipBoard() {
+
+async function drawCenterIcon(canvas, pixel) {
+    const uploadFile = data.fileList[0]
+    const file = uploadFile?.originFileObj || uploadFile
+    if (!file) return
+
+    const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+    })
+
+    const img = await new Promise((resolve, reject) => {
+        const image = new Image()
+        image.onload = () => resolve(image)
+        image.onerror = reject
+        image.src = dataUrl
+    })
+
+    const ctx = canvas.getContext("2d")
+    const iconSize = pixel / 5
+    const iconX = (canvas.width - iconSize) / 2
+    const iconY = (canvas.height - iconSize) / 2
+    ctx.fillStyle = "#fff"
+    ctx.fillRect(iconX - 6, iconY - 6, iconSize + 12, iconSize + 12)
+    ctx.drawImage(img, iconX, iconY, iconSize, iconSize)
+}
+
+async function convertQRCode() {
+    try {
+        await formRef.value.validate()
+        const canvas = document.getElementById("qrcode")
+        const pixel = Number(data.formData.pixel)
+        canvas.width = pixel
+        canvas.height = pixel
+
+        await QRCode.toCanvas(canvas, data.formData.text, {
+            width: pixel,
+            errorCorrectionLevel: data.formData.level,
+            margin: 2,
+        })
+
+        await drawCenterIcon(canvas, pixel)
+        data.showCopy = true
+        message.success("二维码已生成")
+    } catch (error) {
+        if (error?.errorFields) {
+            message.warning("请先完成必要输入")
+        } else {
+            message.error(error?.message || "生成失败")
+        }
+    }
+}
+
+function canvasBlob() {
     const canvas = document.getElementById("qrcode")
-    canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]))
-    message.info("复制成功")
+    return new Promise(resolve => canvas.toBlob(resolve, "image/png"))
+}
+
+async function copyToClipBoard() {
+    try {
+        if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
+            message.warning("当前浏览器不支持直接复制图片，请使用下载")
+            return
+        }
+        const blob = await canvasBlob()
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
+        message.success("二维码已复制")
+    } catch (error) {
+        message.error("复制失败，请使用下载")
+    }
+}
+
+async function downloadQrCode() {
+    const blob = await canvasBlob()
+    if (!blob) return
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "raym-qrcode.png"
+    link.click()
+    URL.revokeObjectURL(url)
 }
 </script>
-<style lang="scss" scoped>
-.content {
-    display: flex;
-    flex-direction: column;
-}
+
+<style scoped lang="scss">
+.tool-detail{width:min(1180px,calc(100% - 40px));margin:48px auto 0}.back{color:var(--color-text-secondary);font-size:11px;text-decoration:none}.eyebrow{margin:0;color:var(--color-accent-primary);font-size:10px;letter-spacing:.14em}.tool-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin:34px 0 36px}.tool-head h1{margin:14px 0;font-size:clamp(42px,5vw,54px);letter-spacing:-.04em}.tool-head p:last-child{max-width:700px;margin:0;color:var(--color-text-secondary);font-size:15px;line-height:1.75}.status{color:var(--color-accent-primary);font-size:10px}.tool-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}.work-surface{padding:26px}.surface-head{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}.surface-head h2{margin:8px 0 0;font-size:26px}.surface-head>span{color:var(--color-text-secondary);font-size:10px}.form-grid{display:grid;grid-template-columns:1fr 220px;gap:18px}.size-row{display:flex;align-items:center;gap:10px}.size-row span{color:var(--color-text-secondary);font-size:10px}.upload-copy{margin-top:6px;font-size:11px}.actions{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}.result-block{position:relative;z-index:1;margin-top:32px;padding-top:28px;border-top:1px solid color-mix(in srgb,var(--color-border-glow) 48%,transparent)}.result-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.result-head h3{margin:8px 0 0;font-size:20px}.result-head>span{color:var(--color-text-secondary);font-size:10px}.qr-stage{position:relative;display:grid;min-height:360px;margin-top:18px;place-items:center;border:1px dashed var(--color-border-glow);border-radius:18px;background:var(--color-bg-panel-strong);overflow:hidden}.qr-stage canvas{display:none;max-width:min(100%,420px);height:auto;background:#fff}.qr-stage.ready canvas{display:block}.placeholder{display:grid;place-items:center;color:var(--color-text-secondary)}.placeholder span{color:var(--color-accent-primary);font-size:38px}.placeholder p{margin:12px 0 0;font-size:12px}.result-actions{display:flex;gap:10px;margin-top:14px}.result-actions button{min-height:42px;padding:0 16px;border:1px solid var(--color-border-glow);border-radius:11px;color:var(--color-text-primary);background:var(--color-chip-bg);cursor:pointer}.side-stack{display:grid;align-content:start;gap:20px}.side-card{padding:22px}.side-card>*{position:relative;z-index:1}.side-card h3{margin:12px 0;font-size:20px;line-height:1.35}.side-card p:last-child{margin:0;color:var(--color-text-secondary);font-size:13px;line-height:1.75}
+:deep(.ant-form-item-label>label){color:var(--color-text-primary)!important}:deep(.ant-input),:deep(.ant-input-number),:deep(.ant-radio-button-wrapper){color:var(--color-text-primary)!important;background:var(--color-bg-panel-strong)!important;border-color:var(--color-border-glow)!important}:deep(.ant-input::placeholder){color:color-mix(in srgb,var(--color-text-secondary) 70%,transparent)}:deep(.ant-radio-button-wrapper-checked){color:var(--color-accent-contrast)!important;background:var(--color-accent-primary)!important}:deep(.ant-btn-primary){color:var(--color-accent-contrast);background:var(--color-accent-primary);border-color:var(--color-accent-primary)}
+@media(max-width:900px){.tool-layout{grid-template-columns:1fr}.side-stack{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.tool-detail{margin-top:38px}.tool-head{align-items:flex-start;flex-direction:column}.form-grid,.side-stack{grid-template-columns:1fr}.actions,.result-actions{flex-direction:column}.actions :deep(.ant-btn),.result-actions button{width:100%}.qr-stage{min-height:300px}.work-surface{padding:20px}}
 </style>
