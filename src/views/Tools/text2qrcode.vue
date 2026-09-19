@@ -196,37 +196,65 @@ async function convertQRCode() {
 
 function canvasBlob() {
     const canvas = document.getElementById("qrcode")
-    return new Promise(resolve => canvas.toBlob(resolve, "image/png"))
+    return new Promise((resolve, reject) => {
+        if (!canvas) {
+            reject(new Error("二维码画布不存在"))
+            return
+        }
+        canvas.toBlob(blob => {
+            if (blob) resolve(blob)
+            else reject(new Error("PNG 生成失败"))
+        }, "image/png")
+    })
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 500)
 }
 
 async function copyToClipBoard() {
     try {
-        if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
-            message.warning("当前浏览器不支持直接复制图片，请使用下载")
-            return
-        }
         const blob = await canvasBlob()
-        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
-        message.success("二维码已复制")
+
+        if (window.isSecureContext && navigator.clipboard?.write && typeof ClipboardItem !== "undefined") {
+            try {
+                await navigator.clipboard.write([new ClipboardItem({ "image/png":blob })])
+                message.success("二维码已复制")
+                return
+            } catch (error) {
+                console.warn("Clipboard image write failed, falling back to download.", error)
+            }
+        }
+
+        downloadBlob(blob, "raym-qrcode.png")
+        message.warning("浏览器限制了图片剪贴板，已改为下载 PNG")
     } catch (error) {
-        message.error("复制失败，请使用下载")
+        console.error(error)
+        message.error("二维码图片生成失败")
     }
 }
 
 async function downloadQrCode() {
-    const blob = await canvasBlob()
-    if (!blob) return
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = "raym-qrcode.png"
-    link.click()
-    URL.revokeObjectURL(url)
+    try {
+        const blob = await canvasBlob()
+        downloadBlob(blob, "raym-qrcode.png")
+        message.success("二维码已下载")
+    } catch (error) {
+        console.error(error)
+        message.error("二维码图片生成失败")
+    }
 }
 </script>
 
 <style scoped lang="scss">
-.tool-detail{width:min(1180px,calc(100% - 40px));margin:48px auto 0}.back{color:var(--color-text-secondary);font-size:11px;text-decoration:none}.eyebrow{margin:0;color:var(--color-accent-primary);font-size:10px;letter-spacing:.14em}.tool-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin:34px 0 36px}.tool-head h1{margin:14px 0;font-size:clamp(42px,5vw,54px);letter-spacing:-.04em}.tool-head p:last-child{max-width:700px;margin:0;color:var(--color-text-secondary);font-size:15px;line-height:1.75}.status{color:var(--color-accent-primary);font-size:10px}.tool-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}.work-surface{padding:26px}.surface-head{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}.surface-head h2{margin:8px 0 0;font-size:26px}.surface-head>span{color:var(--color-text-secondary);font-size:10px}.form-grid{display:grid;grid-template-columns:1fr 220px;gap:18px}.size-row{display:flex;align-items:center;gap:10px}.size-row span{color:var(--color-text-secondary);font-size:10px}.upload-copy{margin-top:6px;font-size:11px}.actions{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}.result-block{position:relative;z-index:1;margin-top:32px;padding-top:28px;border-top:1px solid color-mix(in srgb,var(--color-border-default) 58%,transparent)}.result-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.result-head h3{margin:8px 0 0;font-size:20px}.result-head>span{color:var(--color-text-secondary);font-size:10px}.qr-stage{position:relative;display:grid;min-height:360px;margin-top:18px;place-items:center;border:1px dashed var(--color-border-default);border-radius:18px;background:var(--color-bg-raised);overflow:hidden}.qr-stage canvas{display:none;max-width:min(100%,420px);height:auto;background:#fff}.qr-stage.ready canvas{display:block}.placeholder{display:grid;place-items:center;color:var(--color-text-secondary)}.placeholder span{color:var(--color-accent-primary);font-size:38px}.placeholder p{margin:12px 0 0;font-size:12px}.result-actions{display:flex;gap:10px;margin-top:14px}.result-actions button{min-height:42px;padding:0 16px;border:1px solid var(--color-border-default);border-radius:11px;color:var(--color-text-primary);background:var(--color-bg-control);cursor:pointer}.side-stack{display:grid;align-content:start;gap:20px}.side-card{padding:22px}.side-card>*{position:relative;z-index:1}.side-card h3{margin:12px 0;font-size:20px;line-height:1.35}.side-card p:last-child{margin:0;color:var(--color-text-secondary);font-size:13px;line-height:1.75}
+.tool-detail{width:min(1180px,calc(100% - 40px));margin:48px auto 0}.back{color:var(--color-text-secondary);font-size:11px;text-decoration:none}.eyebrow{margin:0;color:var(--color-accent-primary);font-size:10px;letter-spacing:.14em}.tool-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin:34px 0 36px}.tool-head h1{margin:14px 0;font-size:clamp(42px,5vw,54px);letter-spacing:-.04em}.tool-head p:last-child{max-width:700px;margin:0;color:var(--color-text-secondary);font-size:15px;line-height:1.75}.status{color:var(--color-accent-primary);font-size:10px}.tool-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}.work-surface{padding:26px}.surface-head{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}.surface-head h2{margin:8px 0 0;font-size:26px}.surface-head>span{color:var(--color-text-secondary);font-size:10px}.form-grid{display:grid;grid-template-columns:1fr 220px;gap:18px}.size-row{display:flex;align-items:center;gap:10px}.size-row span{color:var(--color-text-secondary);font-size:10px}.upload-copy{margin-top:6px;font-size:11px}.actions{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}.result-block{position:relative;z-index:1;margin-top:32px;padding-top:28px;border-top:1px solid color-mix(in srgb,var(--color-border-default) 58%,transparent)}.result-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.result-head h3{margin:8px 0 0;font-size:20px}.result-head>span{color:var(--color-text-secondary);font-size:10px}.qr-stage{position:relative;display:grid;min-height:360px;margin-top:18px;place-items:center;border:1px dashed var(--color-border-default);border-radius:18px;background:var(--color-bg-raised);overflow:hidden}.qr-stage canvas{display:none;width:min(100%,420px);max-width:420px;height:auto!important;max-height:420px;aspect-ratio:1/1;object-fit:contain;background:#fff}.qr-stage.ready canvas{display:block}.placeholder{display:grid;place-items:center;color:var(--color-text-secondary)}.placeholder span{color:var(--color-accent-primary);font-size:38px}.placeholder p{margin:12px 0 0;font-size:12px}.result-actions{display:flex;gap:10px;margin-top:14px}.result-actions button{min-height:42px;padding:0 16px;border:1px solid var(--color-border-default);border-radius:11px;color:var(--color-text-primary);background:var(--color-bg-control);cursor:pointer}.side-stack{display:grid;align-content:start;gap:20px}.side-card{padding:22px}.side-card>*{position:relative;z-index:1}.side-card h3{margin:12px 0;font-size:20px;line-height:1.35}.side-card p:last-child{margin:0;color:var(--color-text-secondary);font-size:13px;line-height:1.75}
 :deep(.ant-form-item-label>label){color:var(--color-text-primary)!important}:deep(.ant-input),:deep(.ant-input-number),:deep(.ant-radio-button-wrapper){color:var(--color-text-primary)!important;background:var(--color-bg-control)!important;border-color:var(--color-border-default)!important}:deep(.ant-input::placeholder){color:color-mix(in srgb,var(--color-text-secondary) 70%,transparent)}:deep(.ant-radio-button-wrapper-checked){color:var(--color-accent-contrast)!important;background:var(--color-action-primary)!important}:deep(.ant-btn-primary){color:var(--color-accent-contrast);background:var(--color-action-primary);border-color:var(--color-action-primary)}
 @media(max-width:900px){.tool-layout{grid-template-columns:1fr}.side-stack{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.tool-detail{margin-top:38px}.tool-head{align-items:flex-start;flex-direction:column}.form-grid,.side-stack{grid-template-columns:1fr}.actions,.result-actions{flex-direction:column}.actions :deep(.ant-btn),.result-actions button{width:100%}.qr-stage{min-height:300px}.work-surface{padding:20px}}
