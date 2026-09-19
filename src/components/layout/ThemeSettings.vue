@@ -52,10 +52,10 @@ const { mode, setThemeMode } = useTimeTheme()
 
 const options = [
     { key: "auto", label: "自动", description: "跟随本地时间连续变化" },
-    { key: "dawn", label: "清晨", description: "冷蓝天空 · 云层渐亮" },
-    { key: "day", label: "白天", description: "清透深蓝 · 云层更明显" },
-    { key: "sunset", label: "日落", description: "蓝紫过渡 · 少量暖橙" },
-    { key: "night", label: "夜晚", description: "深蓝星空 · 冰蓝霓虹" },
+    { key: "dawn", label: "清晨", description: "白中透绿 · 春日清晨" },
+    { key: "day", label: "白天", description: "绿色为主 · 混入天空蓝" },
+    { key: "sunset", label: "日落", description: "金黄为主 · 暖棕承接" },
+    { key: "night", label: "夜晚", description: "黑色夜空 · 冷冰蓝" },
 ]
 
 function selectTheme(nextMode) {
@@ -86,8 +86,8 @@ onBeforeUnmount(() => {
 .theme-settings { position: relative; z-index: 120; }
 .theme-trigger {
     display: grid; width: 42px; height: 42px; place-items: center; padding: 0;
-    border: 1px solid var(--color-border-glow); border-radius: 12px;
-    color: var(--color-text-primary); background: var(--color-chip-bg);
+    border: 1px solid var(--color-border-default); border-radius: 12px;
+    color: var(--color-text-primary); background: var(--color-bg-control);
     cursor: pointer; transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 .theme-trigger:hover { border-color: var(--color-accent-primary); box-shadow: var(--shadow-glow); transform: translateY(-1px); }
@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 .theme-panel {
     position: absolute; top: calc(100% + 12px); right: 0; width: min(340px, calc(100vw - 28px));
     padding: 18px; border: 1px solid var(--color-border-glow); border-radius: 18px;
-    background: var(--color-bg-panel-strong); box-shadow: var(--shadow-glow);
+    background: var(--color-bg-raised); box-shadow: var(--shadow-glow);
     z-index: 120; backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%);
 }
 .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
@@ -116,11 +116,11 @@ onBeforeUnmount(() => {
 .theme-options button:hover { background: var(--color-chip-bg); }
 .theme-options button.active { border-color: var(--color-accent-primary); background: var(--color-chip-bg); }
 .swatch { width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,255,255,.14); }
-.swatch--auto { background: linear-gradient(135deg, #4cc2ff, #8a7aff 52%, #ff9b70); }
-.swatch--dawn { background: linear-gradient(135deg, #071a35, #144e72); }
-.swatch--day { background: linear-gradient(135deg, #08284d, #105c8b); }
-.swatch--sunset { background: linear-gradient(135deg, #12152f, #49304f 65%, #b65f4b); }
-.swatch--night { background: linear-gradient(135deg, #020611, #061b34); }
+.swatch--auto { background: linear-gradient(135deg, #f2f6f1, #258f69 36%, #d9a24a 68%, #05090e); }
+.swatch--dawn { background: linear-gradient(135deg, #f8fbf7, #ddeedf 52%, #8fc7a6); }
+.swatch--day { background: linear-gradient(135deg, #b9dcf0, #d9ece2 52%, #b6ddc6); }
+.swatch--sunset { background: linear-gradient(135deg, #d89a48, #8c6436 56%, #4f3a33); }
+.swatch--night { background: linear-gradient(135deg, #05090e, #0c2130 56%, #153a52); }
 .option-copy { display: grid; gap: 3px; }
 .option-copy strong { font-size: 13px; }
 .option-copy small { color: var(--color-text-secondary); font-size: 10px; line-height: 1.45; }
