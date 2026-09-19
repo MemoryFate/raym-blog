@@ -1,0 +1,229 @@
+/* Shared detail-page control system.
+ * Source of truth: Figma Theme tokens consumed through CSS custom properties.
+ * Applies to Tools + Lab only.
+ */
+
+.tool-detail,
+.lab-detail {
+    --ui-input-bg: var(--color-bg-control);
+    --ui-input-border: var(--color-border-default);
+    --ui-input-border-focus: var(--color-border-strong);
+    --ui-input-text: var(--color-text-primary);
+    --ui-input-placeholder: color-mix(in srgb, var(--color-text-secondary) 68%, transparent);
+
+    --ui-toggle-bg: var(--color-bg-control);
+    --ui-toggle-selected-bg: var(--color-bg-selected);
+    --ui-toggle-border: var(--color-border-default);
+    --ui-toggle-selected-border: var(--color-border-strong);
+
+    --ui-button-bg: var(--color-bg-control);
+    --ui-button-border: var(--color-border-default);
+    --ui-button-text: var(--color-text-primary);
+    --ui-button-primary-bg: var(--color-action-primary);
+    --ui-button-primary-text: var(--color-accent-contrast);
+
+    --ui-result-bg: var(--color-bg-raised);
+    --ui-result-border: var(--color-border-default);
+    --ui-result-border-strong: var(--color-border-strong);
+
+    --ui-focus-ring:
+        0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+}
+
+/* INPUT --------------------------------------------------------------- */
+
+.tool-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper, .ant-radio-button-wrapper),
+.lab-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper, .ant-radio-button-wrapper),
+.tool-detail :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select),
+.lab-detail :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+    color: var(--ui-input-text) !important;
+    background: var(--ui-input-bg) !important;
+    border-color: var(--ui-input-border) !important;
+    box-shadow: none !important;
+}
+
+.tool-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper):hover,
+.lab-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper):hover,
+.tool-detail :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select):hover,
+.lab-detail :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select):hover {
+    border-color: var(--ui-input-border-focus) !important;
+}
+
+.tool-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper):focus,
+.tool-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper):focus-within,
+.lab-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper):focus,
+.lab-detail :is(.ant-input, .ant-input-number, .ant-input-affix-wrapper):focus-within,
+.tool-detail :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select):focus,
+.lab-detail :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select):focus {
+    border-color: var(--ui-input-border-focus) !important;
+    box-shadow: var(--ui-focus-ring) !important;
+    outline: none !important;
+}
+
+.tool-detail :is(.ant-input, textarea, input)::placeholder,
+.lab-detail :is(.ant-input, textarea, input)::placeholder {
+    color: var(--ui-input-placeholder) !important;
+}
+
+.tool-detail .ant-input-number-input,
+.lab-detail .ant-input-number-input,
+.tool-detail .ant-input-affix-wrapper input,
+.lab-detail .ant-input-affix-wrapper input {
+    color: var(--ui-input-text) !important;
+    background: transparent !important;
+}
+
+.tool-detail .ant-input-number-handler-wrap,
+.lab-detail .ant-input-number-handler-wrap {
+    background: var(--ui-input-bg) !important;
+    border-inline-start-color: var(--ui-input-border) !important;
+}
+
+.tool-detail .ant-input-number-handler,
+.lab-detail .ant-input-number-handler {
+    border-block-end-color: var(--ui-input-border) !important;
+    color: var(--color-text-secondary) !important;
+}
+
+.tool-detail .ant-form-item-label > label,
+.lab-detail .ant-form-item-label > label {
+    color: var(--color-text-primary) !important;
+}
+
+.tool-detail .ant-upload-wrapper .ant-upload-select,
+.lab-detail .ant-upload-wrapper .ant-upload-select {
+    color: var(--color-text-secondary) !important;
+    background: var(--ui-input-bg) !important;
+    border-color: var(--ui-input-border) !important;
+}
+
+.tool-detail .ant-upload-wrapper .ant-upload-select:hover,
+.lab-detail .ant-upload-wrapper .ant-upload-select:hover {
+    border-color: var(--ui-input-border-focus) !important;
+}
+
+/* TOGGLE / SEGMENT / SELECTED ---------------------------------------- */
+
+.tool-detail .toggle,
+.lab-detail .toggle,
+.tool-detail .mode-tabs,
+.lab-detail .mode-tabs,
+.tool-detail .type-switch,
+.lab-detail .type-switch {
+    color: var(--color-text-secondary) !important;
+}
+
+.tool-detail .toggle,
+.lab-detail .toggle,
+.tool-detail .mode-tabs button,
+.lab-detail .mode-tabs button,
+.tool-detail .type-switch button,
+.lab-detail .type-switch button,
+.tool-detail .ant-radio-button-wrapper,
+.lab-detail .ant-radio-button-wrapper {
+    color: var(--color-text-secondary) !important;
+    background: var(--ui-toggle-bg) !important;
+    border-color: var(--ui-toggle-border) !important;
+    box-shadow: none !important;
+}
+
+.tool-detail .toggle:has(input:checked),
+.lab-detail .toggle:has(input:checked),
+.tool-detail .mode-tabs button.active,
+.lab-detail .mode-tabs button.active,
+.tool-detail .type-switch button.active,
+.lab-detail .type-switch button.active,
+.tool-detail .ant-radio-button-wrapper-checked,
+.lab-detail .ant-radio-button-wrapper-checked {
+    color: var(--color-text-primary) !important;
+    background: var(--ui-toggle-selected-bg) !important;
+    border-color: var(--ui-toggle-selected-border) !important;
+    box-shadow: var(--shadow-selected) !important;
+}
+
+.tool-detail .toggle:has(input:checked) b,
+.lab-detail .toggle:has(input:checked) b {
+    color: var(--color-action-primary) !important;
+}
+
+.tool-detail .ant-radio-button-wrapper-checked::before,
+.lab-detail .ant-radio-button-wrapper-checked::before {
+    background: var(--ui-toggle-selected-border) !important;
+}
+
+/* BUTTON -------------------------------------------------------------- */
+
+.tool-detail :is(.ant-btn:not(.ant-btn-primary), .result-actions button, .plain-actions button, .connection-actions button:not(.primary), .log-head button, .receiver-head button, .side-card button:not(.primary)),
+.lab-detail :is(.ant-btn:not(.ant-btn-primary), .result-actions button, .plain-actions button, .connection-actions button:not(.primary), .log-head button, .receiver-head button, .side-card button:not(.primary)) {
+    color: var(--ui-button-text) !important;
+    background: var(--ui-button-bg) !important;
+    border-color: var(--ui-button-border) !important;
+    box-shadow: none !important;
+}
+
+.tool-detail :is(.ant-btn-primary, .primary, .send.primary),
+.lab-detail :is(.ant-btn-primary, .primary, .send.primary) {
+    color: var(--ui-button-primary-text) !important;
+    background: var(--ui-button-primary-bg) !important;
+    border-color: var(--ui-button-primary-bg) !important;
+    box-shadow:
+        0 8px 22px color-mix(in srgb, var(--color-action-primary) 20%, transparent) !important;
+}
+
+.tool-detail :is(button, .ant-btn):not(:disabled):hover,
+.lab-detail :is(button, .ant-btn):not(:disabled):hover {
+    border-color: var(--color-border-strong) !important;
+}
+
+.tool-detail :is(button, .ant-btn):disabled,
+.lab-detail :is(button, .ant-btn):disabled {
+    color: color-mix(in srgb, var(--color-text-secondary) 62%, transparent) !important;
+    background: color-mix(in srgb, var(--color-bg-control) 72%, transparent) !important;
+    border-color: color-mix(in srgb, var(--color-border-default) 72%, transparent) !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+}
+
+/* RESULT SURFACE ------------------------------------------------------ */
+
+.tool-detail :is(.result-card, .result, .result-row, .qr-stage, .preview-box, .drop-zone, .format-note, .stat-grid > div),
+.lab-detail :is(.result-card, .result, .result-row, .qr-stage, .preview-box, .drop-zone, .format-note, .stat-grid > div) {
+    background: var(--ui-result-bg) !important;
+    border-color: var(--ui-result-border) !important;
+}
+
+.tool-detail :is(.log-console, .messages, .result pre),
+.lab-detail :is(.log-console, .messages, .result pre) {
+    color: var(--color-text-primary) !important;
+    background: var(--ui-result-bg) !important;
+    border-color: var(--ui-result-border-strong) !important;
+}
+
+.tool-detail :is(.result-row, .log-line, .message-row),
+.lab-detail :is(.result-row, .log-line, .message-row) {
+    border-color: color-mix(in srgb, var(--color-border-default) 58%, transparent) !important;
+}
+
+.tool-detail :is(.result-row button, .log-line--send b, .message-row span),
+.lab-detail :is(.result-row button, .log-line--send b, .message-row span) {
+    color: var(--color-accent-primary) !important;
+}
+
+.tool-detail :is(.log-line--receive b),
+.lab-detail :is(.log-line--receive b) {
+    color: var(--color-accent-secondary) !important;
+}
+
+/* Keep selected/output surfaces visually stable across light themes. */
+[data-theme="dawn"] :is(.tool-detail, .lab-detail) :is(.log-console, .messages, .result pre),
+[data-theme="day"] :is(.tool-detail, .lab-detail) :is(.log-console, .messages, .result pre) {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-default) 18%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tool-detail *,
+    .lab-detail * {
+        scroll-behavior: auto !important;
+    }
+}
