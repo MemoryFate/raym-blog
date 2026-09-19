@@ -258,7 +258,23 @@ onBeforeUnmount(()=>{
 .atmosphere__gradient{
     position:absolute;
     inset:-6%;
-    background:var(--background-gradient);
+    background:
+        radial-gradient(
+            ellipse var(--sky-glow-primary-size) at var(--sky-glow-primary-position),
+            var(--sky-glow-primary),
+            transparent 100%
+        ),
+        radial-gradient(
+            ellipse var(--sky-glow-secondary-size) at var(--sky-glow-secondary-position),
+            var(--sky-glow-secondary),
+            transparent 100%
+        ),
+        linear-gradient(
+            180deg,
+            var(--sky-start) 0%,
+            var(--sky-mid) var(--sky-mid-stop),
+            var(--sky-end) 100%
+        );
     transition:background 900ms ease;
 }
 
