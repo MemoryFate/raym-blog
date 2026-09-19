@@ -64,6 +64,7 @@
                     <h3>把当前棋盘复制成图片</h3>
                     <p>适合保存题目或分享当前进度。</p>
                     <button type="button" class="wide" @click="copyToClipBoard">复制棋盘图片</button>
+                    <button type="button" class="wide" @click="downloadBoardImage">下载棋盘 PNG</button>
                 </NeonGlass>
             </aside>
         </div>
@@ -71,7 +72,6 @@
 </template>
 
 <script setup>
-import html2canvas from "html2canvas"
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue"
 import { message } from "ant-design-vue"
 import { generateSudoku } from "./js/sudokuGenerator"
@@ -187,19 +187,133 @@ function checkPuzzle() {
     message.success("完成！")
 }
 
+function themeColor(name, fallback) {
+    const root = document.querySelector(".site-shell") || document.documentElement
+    const value = getComputedStyle(root).getPropertyValue(name).trim()
+    return value || fallback
+}
+
+function renderBoardCanvas() {
+    const size = 1080
+    const padding = 54
+    const boardSize = size - padding * 2
+    const cellSize = boardSize / 9
+    const canvas = document.createElement("canvas")
+    canvas.width = size
+    canvas.height = size
+
+    const ctx = canvas.getContext("2d")
+    const bg = themeColor("--color-bg-raised", "#0f1c26")
+    const panel = themeColor("--color-bg-panel", "#0b151d")
+    const fixedBg = themeColor("--color-bg-control", "#112633")
+    const selectedBg = themeColor("--color-bg-selected", "#143546")
+    const border = themeColor("--color-border-default", "#23485f")
+    const borderStrong = themeColor("--color-border-strong", "#58bceb")
+    const text = themeColor("--color-text-primary", "#eaf6ff")
+    const accent = themeColor("--color-accent-primary", "#78cff6")
+
+    ctx.fillStyle = bg
+    ctx.fillRect(0, 0, size, size)
+
+    for (let row = 0; row < 9; row += 1) {
+        for (let col = 0; col < 9; col += 1) {
+            const x = padding + col * cellSize
+            const y = padding + row * cellSize
+            const value = puzzle.value[row]?.[col] || 0
+            const fixed = original.value[row]?.[col] !== 0
+            const isSelected = selected.value?.row === row && selected.value?.col === col
+            const isConflict = conflicts.value.some(item => item.row === row && item.col === col)
+
+            ctx.fillStyle = isConflict
+                ? "rgba(168,60,75,.42)"
+                : isSelected
+                    ? selectedBg
+                    : fixed
+                        ? fixedBg
+                        : panel
+            ctx.fillRect(x, y, cellSize, cellSize)
+
+            if (value) {
+                ctx.fillStyle = fixed ? text : accent
+                ctx.font = "600 42px DM Sans, sans-serif"
+                ctx.textAlign = "center"
+                ctx.textBaseline = "middle"
+                ctx.fillText(String(value), x + cellSize / 2, y + cellSize / 2 + 1)
+            }
+        }
+    }
+
+    ctx.lineCap = "square"
+    for (let i = 0; i <= 9; i += 1) {
+        const pos = padding + i * cellSize
+        const strong = i % 3 === 0
+        ctx.strokeStyle = strong ? borderStrong : border
+        ctx.lineWidth = strong ? 4 : 1.5
+
+        ctx.beginPath()
+        ctx.moveTo(padding, pos)
+        ctx.lineTo(padding + boardSize, pos)
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.moveTo(pos, padding)
+        ctx.lineTo(pos, padding + boardSize)
+        ctx.stroke()
+    }
+
+    return canvas
+}
+
+function canvasToPngBlob(canvas) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+            if (blob) resolve(blob)
+            else reject(new Error("PNG 生成失败"))
+        }, "image/png")
+    })
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 500)
+}
+
 async function copyToClipBoard() {
     try {
-        const board = document.querySelector(".board")
-        const canvas = await html2canvas(board, { backgroundColor:null })
-        if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
-            message.warning("当前浏览器不支持直接复制图片")
-            return
+        const blob = await canvasToPngBlob(renderBoardCanvas())
+
+        if (window.isSecureContext && navigator.clipboard?.write && typeof ClipboardItem !== "undefined") {
+            try {
+                await navigator.clipboard.write([new ClipboardItem({ "image/png":blob })])
+                message.success("棋盘图片已复制")
+                return
+            } catch (error) {
+                console.warn("Clipboard image write failed, falling back to download.", error)
+            }
         }
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"))
-        await navigator.clipboard.write([new ClipboardItem({ "image/png":blob })])
-        message.success("棋盘图片已复制")
-    } catch {
-        message.error("复制失败")
+
+        downloadBlob(blob, "raym-sudoku.png")
+        message.warning("浏览器限制了图片剪贴板，已改为下载 PNG")
+    } catch (error) {
+        console.error(error)
+        message.error("棋盘图片生成失败")
+    }
+}
+
+async function downloadBoardImage() {
+    try {
+        const blob = await canvasToPngBlob(renderBoardCanvas())
+        downloadBlob(blob, "raym-sudoku.png")
+        message.success("棋盘图片已下载")
+    } catch (error) {
+        console.error(error)
+        message.error("棋盘图片生成失败")
     }
 }
 
