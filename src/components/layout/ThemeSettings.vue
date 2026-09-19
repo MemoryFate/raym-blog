@@ -90,12 +90,12 @@ onBeforeUnmount(() => {
     color: var(--color-text-primary); background: var(--color-bg-control);
     cursor: pointer; transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
-.theme-trigger:hover { border-color: var(--color-accent-primary); box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+.theme-trigger:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-selected); transform: translateY(-1px); }
 .theme-trigger span { font-size: 18px; line-height: 1; }
 
 .theme-panel {
     position: absolute; top: calc(100% + 12px); right: 0; width: min(340px, calc(100vw - 28px));
-    padding: 18px; border: 1px solid var(--color-border-glow); border-radius: 18px;
+    padding: 18px; border: 1px solid var(--color-border-strong); border-radius: 18px;
     background: var(--color-bg-raised); box-shadow: var(--shadow-glow);
     z-index: 120; backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%);
 }
@@ -113,14 +113,14 @@ onBeforeUnmount(() => {
     width: 100%; padding: 10px; border: 1px solid transparent; border-radius: 12px;
     color: var(--color-text-primary); text-align: left; background: transparent; cursor: pointer;
 }
-.theme-options button:hover { background: var(--color-chip-bg); }
-.theme-options button.active { border-color: var(--color-accent-primary); background: var(--color-chip-bg); }
+.theme-options button:hover { background: var(--color-bg-control); }
+.theme-options button.active { border-color: var(--color-border-strong); background: var(--color-bg-selected); }
 .swatch { width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255,255,255,.14); }
 .swatch--auto { background: linear-gradient(135deg, #f2f6f1, #258f69 36%, #d9a24a 68%, #05090e); }
-.swatch--dawn { background: linear-gradient(135deg, #f8fbf7, #ddeedf 52%, #8fc7a6); }
-.swatch--day { background: linear-gradient(135deg, #b9dcf0, #d9ece2 52%, #b6ddc6); }
-.swatch--sunset { background: linear-gradient(135deg, #d89a48, #8c6436 56%, #4f3a33); }
-.swatch--night { background: linear-gradient(135deg, #05090e, #0c2130 56%, #153a52); }
+.swatch--dawn { background: linear-gradient(135deg, #f3f7f2, #e7f1ea 55%, #ddeae4); }
+.swatch--day { background: linear-gradient(135deg, #ddefe5, #c9e9dd 55%, #b9ddf2); }
+.swatch--sunset { background: linear-gradient(135deg, #4f3927, #8c6436 52%, #a9793e); }
+.swatch--night { background: linear-gradient(135deg, #05090e, #07131d 58%, #0a1c29); }
 .option-copy { display: grid; gap: 3px; }
 .option-copy strong { font-size: 13px; }
 .option-copy small { color: var(--color-text-secondary); font-size: 10px; line-height: 1.45; }
