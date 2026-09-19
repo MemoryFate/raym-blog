@@ -1,6 +1,6 @@
 <template>
     <footer class="site-footer">
-        <span>© 2026 RayM. 由好奇心驱动。</span>
+        <span>© 2026 RayM.</span>
         <a href="https://github.com/MemoryFate/raym-blog" target="_blank" rel="noreferrer">GitHub ↗</a>
     </footer>
 </template>
