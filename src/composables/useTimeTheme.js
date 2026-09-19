@@ -24,14 +24,29 @@ function toStyleVars(tokens) {
         "--color-bg-base": cssRgba(tokens.bgBase),
         "--color-bg-panel": cssRgba(tokens.bgPanel),
         "--color-bg-panel-strong": cssRgba(tokens.bgPanelStrong),
+        "--color-bg-raised": cssRgba(tokens.bgRaised),
+        "--color-bg-control": cssRgba(tokens.bgControl),
+        "--color-bg-selected": cssRgba(tokens.bgSelected),
         "--color-panel-highlight": cssRgba(tokens.panelHighlight),
         "--color-chip-bg": cssRgba(tokens.chipBg),
-        "--color-border-glow": cssRgba(tokens.borderGlow),
+
+        "--color-text-primary": cssRgba(tokens.textPrimary),
+        "--color-text-secondary": cssRgba(tokens.textSecondary),
+        "--color-text-on-accent": cssRgba(tokens.textOnAccent),
+
         "--color-accent-primary": cssRgba(tokens.accentPrimary),
         "--color-accent-secondary": cssRgba(tokens.accentSecondary),
         "--color-accent-contrast": cssRgba(tokens.accentContrast),
-        "--color-text-primary": cssRgba(tokens.textPrimary),
-        "--color-text-secondary": cssRgba(tokens.textSecondary),
+
+        "--color-border-default": cssRgba(tokens.borderDefault),
+        "--color-border-strong": cssRgba(tokens.borderStrong),
+        "--color-border-glow": cssRgba(tokens.borderGlow),
+
+        "--color-ambient-primary": cssRgba(tokens.ambientPrimary),
+        "--color-ambient-secondary": cssRgba(tokens.ambientSecondary),
+        "--color-canvas-star": cssRgba(tokens.canvasStar),
+        "--color-canvas-cloud": cssRgba(tokens.canvasCloud),
+
         "--sky-start": cssRgba(tokens.skyStart),
         "--sky-mid": cssRgba(tokens.skyMid),
         "--sky-end": cssRgba(tokens.skyEnd),
