@@ -1,6 +1,6 @@
 <template>
     <header class="header-wrap">
-        <NeonGlass as="div" class="site-header">
+        <NeonGlass as="div" class="site-header" :clip="false">
             <RouterLink class="brand" to="/" @click="closeMenu">
                 <span class="brand__mark">↯</span><span>RayM.</span>
             </RouterLink>
