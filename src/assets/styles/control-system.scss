@@ -153,16 +153,16 @@
 
 /* BUTTON -------------------------------------------------------------- */
 
-.tool-detail :is(.ant-btn:not(.ant-btn-primary), .result-actions button, .plain-actions button, .connection-actions button:not(.primary), .log-head button, .receiver-head button, .side-card button:not(.primary)),
-.lab-detail :is(.ant-btn:not(.ant-btn-primary), .result-actions button, .plain-actions button, .connection-actions button:not(.primary), .log-head button, .receiver-head button, .side-card button:not(.primary)) {
+.tool-detail :is(.ant-btn:not(.ant-btn-primary), .result-actions button, .plain-actions button, .connection-actions button:not(.primary), .log-head button, .receiver-head button, .side-card button:not(.primary), .game-actions button:not(.primary), .number-pad button, .download),
+.lab-detail :is(.ant-btn:not(.ant-btn-primary), .result-actions button, .plain-actions button, .connection-actions button:not(.primary), .log-head button, .receiver-head button, .side-card button:not(.primary), .game-actions button:not(.primary), .number-pad button, .download) {
     color: var(--ui-button-text) !important;
     background: var(--ui-button-bg) !important;
     border-color: var(--ui-button-border) !important;
     box-shadow: none !important;
 }
 
-.tool-detail :is(.ant-btn-primary, .primary, .send.primary),
-.lab-detail :is(.ant-btn-primary, .primary, .send.primary) {
+.tool-detail :is(.ant-btn-primary, .primary, .send.primary, .game-actions .primary),
+.lab-detail :is(.ant-btn-primary, .primary, .send.primary, .game-actions .primary) {
     color: var(--ui-button-primary-text) !important;
     background: var(--ui-button-primary-bg) !important;
     border-color: var(--ui-button-primary-bg) !important;
