@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-.theme-settings { position: relative; z-index: 4; }
+.theme-settings { position: relative; z-index: 120; }
 .theme-trigger {
     display: grid; width: 42px; height: 42px; place-items: center; padding: 0;
     border: 1px solid var(--color-border-glow); border-radius: 12px;
@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
     position: absolute; top: calc(100% + 12px); right: 0; width: min(340px, calc(100vw - 28px));
     padding: 18px; border: 1px solid var(--color-border-glow); border-radius: 18px;
     background: var(--color-bg-panel-strong); box-shadow: var(--shadow-glow);
-    backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%);
+    z-index: 120; backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%);
 }
 .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
 .panel-head strong { display: block; margin-top: 6px; font-size: 17px; }
