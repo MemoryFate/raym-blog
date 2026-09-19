@@ -75,12 +75,12 @@ function cellClass(index, value) {
     color:var(--color-text-primary);background:color-mix(in srgb,var(--color-bg-panel) 82%,transparent);
     font:600 clamp(14px,3vw,22px)/1 "DM Sans",sans-serif;cursor:pointer;transition:background 120ms ease,color 120ms ease,box-shadow 120ms ease;
 }
-.cell:not(.fixed):hover{background:color-mix(in srgb,var(--color-chip-bg) 86%,var(--color-accent-primary) 14%)}
-.cell.fixed{color:var(--color-text-primary);background:color-mix(in srgb,var(--color-bg-panel-strong) 92%,var(--color-text-primary) 8%);cursor:default}
+.cell:not(.fixed):hover{background:var(--color-bg-selected)}
+.cell.fixed{color:var(--color-text-primary);background:color-mix(in srgb,var(--color-bg-raised) 92%,var(--color-text-primary) 8%);cursor:default}
 .cell.related{background:var(--color-bg-control)}
 .cell.same-value{color:var(--color-accent-primary);background:var(--color-bg-selected)}
 .cell.selected{color:var(--color-text-primary);background:var(--color-bg-selected);box-shadow:inset 0 0 0 2px var(--color-border-strong),var(--shadow-selected)}
-.cell.conflict{color:#ffd4ca;background:color-mix(in srgb,#a83c4b 45%,var(--color-bg-panel-strong))}
+.cell.conflict{color:#ffd4ca;background:color-mix(in srgb,#a83c4b 45%,var(--color-bg-raised))}
 .cell.box-right{border-right:2px solid color-mix(in srgb,var(--color-border-strong) 72%,transparent)}
 .cell.box-bottom{border-bottom:2px solid color-mix(in srgb,var(--color-border-strong) 72%,transparent)}
 .cell:disabled{opacity:1}
