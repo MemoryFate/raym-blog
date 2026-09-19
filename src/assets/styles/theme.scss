@@ -5,26 +5,90 @@
     color-scheme: dark;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
-    --color-bg-base:#020611; --color-bg-panel:rgba(8,22,42,.84); --color-bg-panel-strong:rgba(6,16,32,.96);
-    --color-panel-highlight:rgba(16,39,67,.78); --color-chip-bg:rgba(7,30,54,.88); --color-border-glow:rgba(22,143,216,.78);
-    --color-accent-primary:#20aeff; --color-accent-secondary:#7d68ff; --color-accent-contrast:#020611;
-    --color-text-primary:#f3f8ff; --color-text-secondary:#b7c8dc;
-    --sky-start:#020611; --sky-mid:#041126; --sky-end:#061b34;
-    --sky-glow-primary:rgba(32,174,255,.22); --sky-glow-secondary:rgba(125,104,255,.15);
+
+    --color-bg-base: #05090e;
+    --color-bg-panel: #0b151d;
+    --color-bg-panel-strong: #0f1c26;
+    --color-bg-raised: #0f1c26;
+    --color-bg-control: #112633;
+    --color-bg-selected: #143546;
+    --color-panel-highlight: #0f1c26;
+    --color-chip-bg: #112633;
+
+    --color-text-primary: #eaf6ff;
+    --color-text-secondary: #96afbf;
+    --color-text-on-accent: #041018;
+
+    --color-accent-primary: #78cff6;
+    --color-accent-secondary: #a9e7ff;
+    --color-accent-contrast: #041018;
+
+    --color-border-default: #23485f;
+    --color-border-strong: #58bceb;
+    --color-border-glow: #61c8ff;
+
+    --color-ambient-primary: #153a52;
+    --color-ambient-secondary: #0c2130;
+    --color-canvas-star: #ddf6ff;
+    --color-canvas-cloud: #627888;
+
+    --sky-start: #05090e;
+    --sky-mid: #0c2130;
+    --sky-end: #153a52;
+    --sky-glow-primary: rgba(97,200,255,.18);
+    --sky-glow-secondary: rgba(169,231,255,.10);
+
     --background-gradient:
         radial-gradient(circle at 76% 14%, var(--sky-glow-primary), transparent 34%),
-        radial-gradient(circle at 14% 76%, var(--sky-glow-secondary), transparent 34%),
-        linear-gradient(180deg, var(--sky-start) 0%, var(--sky-mid) 56%, var(--sky-end) 100%);
-    --shadow-panel:0 12px 36px rgba(0,0,0,.28);
-    --shadow-glow:0 18px 44px color-mix(in srgb,var(--color-accent-primary) 21%,transparent), inset 0 1px rgba(255,255,255,.05);
-    --shadow-hover:0 20px 50px color-mix(in srgb,var(--color-accent-primary) 27%,transparent);
+        radial-gradient(circle at 14% 76%, var(--sky-glow-secondary), transparent 36%),
+        linear-gradient(180deg, var(--sky-start) 0%, var(--sky-mid) 58%, var(--sky-end) 100%);
+
+    --shadow-panel: 0 12px 34px rgba(0,0,0,.18);
+    --shadow-glow:
+        0 18px 44px color-mix(in srgb,var(--color-accent-primary) 22%,transparent),
+        inset 0 1px rgba(255,255,255,.08);
+    --shadow-hover:
+        0 20px 50px color-mix(in srgb,var(--color-accent-primary) 26%,transparent);
 }
-* { box-sizing:border-box; }
-html { scroll-behavior:smooth; background:var(--color-bg-base); }
-body { min-width:320px; min-height:100vh; margin:0; overflow-x:hidden; color:var(--color-text-primary); background:var(--color-bg-base); }
-button,input,textarea,select { font:inherit; }
-button,a { -webkit-tap-highlight-color:transparent; }
-#app { min-height:100vh; }
-::selection { color:var(--color-accent-contrast); background:var(--color-accent-primary); }
-[data-theme="night"],[data-theme="dawn"],[data-theme="day"],[data-theme="sunset"] { color-scheme:dark; }
-.mono,.eyebrow { font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+
+* { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    background: var(--color-bg-base);
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    color: var(--color-text-primary);
+    background: var(--color-bg-base);
+}
+
+button,
+input,
+textarea,
+select { font: inherit; }
+
+button,
+a { -webkit-tap-highlight-color: transparent; }
+
+#app { min-height: 100vh; }
+
+::selection {
+    color: var(--color-text-on-accent);
+    background: var(--color-accent-primary);
+}
+
+[data-theme="night"],
+[data-theme="sunset"] { color-scheme: dark; }
+
+[data-theme="dawn"],
+[data-theme="day"] { color-scheme: light; }
+
+.mono,
+.eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
