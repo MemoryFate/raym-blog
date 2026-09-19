@@ -27,6 +27,7 @@ const { theme, styleVars, atmosphere } = useTimeTheme()
 <style scoped lang="scss">
 .site-shell {
     position: relative;
+    isolation: isolate;
     min-height: 100vh;
     color: var(--color-text-primary);
     background: var(--color-bg-base);
