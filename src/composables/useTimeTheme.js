@@ -30,12 +30,14 @@ function toStyleVars(tokens) {
         "--color-panel-highlight": cssRgba(tokens.panelHighlight),
         "--color-chip-bg": cssRgba(tokens.chipBg),
 
+        "--color-heading-primary": cssRgba(tokens.headingPrimary),
         "--color-text-primary": cssRgba(tokens.textPrimary),
         "--color-text-secondary": cssRgba(tokens.textSecondary),
         "--color-text-on-accent": cssRgba(tokens.textOnAccent),
 
         "--color-accent-primary": cssRgba(tokens.accentPrimary),
         "--color-accent-secondary": cssRgba(tokens.accentSecondary),
+        "--color-action-primary": cssRgba(tokens.actionPrimary),
         "--color-accent-contrast": cssRgba(tokens.accentContrast),
 
         "--color-border-default": cssRgba(tokens.borderDefault),
