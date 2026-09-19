@@ -15,7 +15,7 @@
                 <p class="mono hero-index">01 — 个人主页&nbsp;&nbsp;&nbsp;&nbsp;02 — 数字花园</p>
             </div>
 
-            <NeonGlass class="console" glow>
+            <NeonGlass class="console" raised glow>
                 <div class="console-head mono"><span>● 控制台在线</span><span>RM / 001</span></div>
                 <div class="identity">
                     <p class="eyebrow">当前身份</p>
@@ -37,7 +37,7 @@
         <section class="block">
             <SectionTitle eyebrow="关于我" title="此刻关注的几件事" suffix="/ 04 个节点活跃" />
             <div class="orbit-grid">
-                <NeonGlass v-for="item in orbitItems" :key="item.label" class="card orbit-card" interactive>
+                <NeonGlass v-for="item in orbitItems" :key="item.label" class="card orbit-card" :selected="item.selected" interactive>
                     <i>{{ item.icon }}</i>
                     <p class="eyebrow">{{ item.label }}</p>
                     <h3>{{ item.title }}</h3>
@@ -89,7 +89,7 @@
                     </div>
                 </NeonGlass>
 
-                <NeonGlass class="feature" glow interactive>
+                <NeonGlass class="feature" raised glow interactive>
                     <div class="panel-head">
                         <p class="eyebrow">悬停预览</p>
                         <span>{{ previewTool.icon }}</span>
@@ -137,6 +137,7 @@
                     as="button"
                     class="theme-card"
                     :class="{ active: theme === item.key }"
+                    :selected="theme === item.key"
                     interactive
                     @click="setThemeMode(item.key)"
                 >
@@ -171,7 +172,7 @@ const SectionTitle = defineComponent({
 const orbitItems = [
     { icon: "◎", label: "关于", title: "默认保持好奇", description: "我喜欢设计、代码与一个好问题相遇的地方。" },
     { icon: "▣", label: "关注", title: "让复杂变得更清楚", description: "持续探索 AI、数据与业务流程如何组合成真正可用的产品。" },
-    { icon: "≋", label: "技术栈", title: "小而锋利的工具", description: "Vue、Java、Python、PostgreSQL，以及大量持续迭代。" },
+    { icon: "≋", label: "技术栈", title: "小而锋利的工具", description: "Vue、Java、Python、PostgreSQL，以及大量持续迭代。", selected: true },
     { icon: "✣", label: "现在", title: "给想法留出空间", description: "记录原型、项目、踩坑和那些值得再次回看的思路。" },
 ]
 
@@ -208,8 +209,8 @@ const themeItems = [
 .hero-text { max-width: 540px; margin: 24px 0 0; color: var(--color-text-secondary); font-size: 17px; line-height: 1.8; }
 .actions { display: flex; gap: 16px; margin-top: 28px; }
 .actions a { min-height: 48px; display: inline-flex; align-items: center; padding: 0 22px; border-radius: 14px; font-size: 13px; font-weight: 600; text-decoration: none; }
-.primary { color: var(--color-accent-contrast); background: var(--color-accent-primary); box-shadow: 0 8px 24px color-mix(in srgb, var(--color-accent-primary) 30%, transparent); }
-.secondary { color: var(--color-text-primary); border: 1px solid var(--color-border-glow); background: color-mix(in srgb, var(--color-bg-panel-strong) 82%, transparent); }
+.primary { color: var(--color-accent-contrast); background: var(--color-action-primary); box-shadow: 0 8px 24px rgba(26,166,255,.30); }
+.secondary { color: var(--color-text-primary); border: 1px solid var(--color-border-strong); background: var(--color-bg-control); }
 .hero-index { margin-top: 38px; color: var(--color-text-secondary); opacity: .65; font-size: 10px; }
 .console { min-height: 420px; padding: 26px 28px; border-radius: 24px; }
 .console-head,.identity,.divider,.meta,.chips { position: relative; z-index: 1; }
@@ -226,8 +227,8 @@ const themeItems = [
 .meta strong { font-size: 12px; font-weight: 400; }
 .accent { color: var(--color-accent-primary); }
 .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 34px; }
-.chips span { padding: 6px 12px; border: 1px solid var(--color-border-glow); border-radius: 999px; color: var(--color-text-secondary); background: var(--color-chip-bg); font-size: 11px; }
-.chips .active { color: var(--color-accent-primary); border-color: var(--color-accent-primary); }
+.chips span { padding: 6px 12px; border: 1px solid var(--color-border-default); border-radius: 999px; color: var(--color-text-secondary); background: var(--color-bg-control); font-size: 11px; }
+.chips .active { color: var(--color-accent-primary); border-color: var(--color-border-strong); background: var(--color-bg-selected); }
 
 .block { margin-top: 100px; }
 .anchor { scroll-margin-top: 120px; }
@@ -241,8 +242,8 @@ const themeItems = [
 .card { min-height: 210px; padding: 20px; }
 .card i,.project-top i {
     display: grid; width: 40px; height: 40px; place-items: center;
-    border: 1px solid var(--color-border-glow); border-radius: 12px;
-    color: var(--color-accent-primary); background: var(--color-chip-bg); font-style: normal; font-size: 18px;
+    border: 1px solid var(--color-border-strong); border-radius: 12px;
+    color: var(--color-accent-primary); background: var(--color-bg-control); font-style: normal; font-size: 18px;
 }
 .card > .eyebrow { position: relative; z-index: 1; margin-top: 18px; color: var(--color-text-secondary); }
 .card h3 { position: relative; z-index: 1; margin: 9px 0 8px; font-size: 20px; }
@@ -261,13 +262,13 @@ const themeItems = [
 .tools { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 22px; }
 .tools a {
     min-height: 58px; display: grid; align-content: center; gap: 3px; padding: 0 14px;
-    border: 1px solid var(--color-border-glow); border-radius: 12px;
-    color: var(--color-text-primary); background: color-mix(in srgb,var(--color-chip-bg) 76%,transparent);
+    border: 1px solid var(--color-border-default); border-radius: 12px;
+    color: var(--color-text-primary); background: var(--color-bg-control);
     text-decoration: none; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 .tools a span { font-size: 13px; }
 .tools a small { color: var(--color-text-secondary); font-size: 10px; }
-.tools a:hover,.tools a.active { border-color: var(--color-accent-primary); background: color-mix(in srgb,var(--color-chip-bg) 90%,var(--color-accent-primary) 10%); transform: translateY(-2px); }
+.tools a:hover,.tools a.active { border-color: var(--color-border-strong); background: var(--color-bg-selected); transform: translateY(-2px); }
 
 .feature { display: flex; flex-direction: column; justify-content: space-between; }
 .feature h3 { position: relative; z-index: 1; margin: 6px 0 12px; font-size: 36px; }
@@ -278,10 +279,10 @@ const themeItems = [
 .preview-tags span { padding: 5px 9px; border: 1px solid var(--color-border-glow); border-radius: 999px; color: var(--color-text-secondary); background: var(--color-chip-bg); font-size: 10px; }
 .preview-visual {
     min-height: 190px; display: grid; align-content: center; gap: 16px; padding: 22px;
-    border: 1px solid var(--color-border-glow); border-radius: 18px;
+    border: 1px solid var(--color-border-strong); border-radius: 18px;
     background:
         radial-gradient(circle at 70% 20%, color-mix(in srgb,var(--color-accent-primary) 24%,transparent), transparent 45%),
-        var(--color-bg-panel-strong);
+        var(--color-bg-raised);
     animation: preview-in 180ms ease;
 }
 .preview-symbol { display: grid; width: 56px; height: 56px; place-items: center; border: 1px solid var(--color-accent-primary); border-radius: 15px; color: var(--color-accent-primary); background: var(--color-chip-bg); font-size: 19px; font-weight: 600; }
@@ -304,7 +305,7 @@ const themeItems = [
 }
 .theme-card strong,.theme-card span { position: relative; z-index: 1; display: block; }
 .theme-card span { margin-top: 10px; color: var(--color-text-secondary); font-size: 10px; }
-.theme-card.active { border-color: var(--color-accent-primary); box-shadow: var(--shadow-glow); }
+.theme-card.active { border-color: var(--color-border-strong); box-shadow: var(--shadow-selected); }
 .auto-theme {
     margin-top: 16px; padding: 9px 13px; border: 1px solid var(--color-border-glow); border-radius: 10px;
     color: var(--color-text-secondary); background: var(--color-chip-bg); cursor: pointer;
