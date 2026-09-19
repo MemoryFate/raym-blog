@@ -1,6 +1,6 @@
 <template>
     <header class="header-wrap">
-        <NeonGlass as="div" class="site-header" :clip="false">
+        <NeonGlass as="div" class="site-header" raised :clip="false">
             <RouterLink class="brand" to="/" @click="closeMenu">
                 <span class="brand__mark">↯</span><span>RayM.</span>
             </RouterLink>
@@ -46,15 +46,21 @@ const closeMenu = () => { navOpen.value = false }
 .site-header {
     min-height: 72px; display: flex; align-items: center; justify-content: space-between;
     padding: 14px 18px; border-radius: 18px;
+    background: color-mix(in srgb, var(--color-bg-raised) 94%, transparent);
+    border-color: var(--color-border-default);
+    box-shadow: 0 8px 28px rgba(0,0,0,.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
+[data-theme="sunset"] .brand__mark { color: var(--color-text-primary); }
 .brand {
     position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 14px;
     color: var(--color-text-primary); font-weight: 700; font-size: 18px; text-decoration: none;
 }
 .brand__mark {
     display: grid; width: 40px; height: 40px; place-items: center;
-    border: 1px solid var(--color-accent-primary); border-radius: 12px;
-    color: var(--color-accent-primary); background: var(--color-chip-bg);
+    border: 1px solid var(--color-border-strong); border-radius: 12px;
+    color: var(--color-accent-primary); background: var(--color-bg-control);
 }
 .header-actions { position: relative; z-index: 2; display: flex; align-items: center; gap: 16px; }
 .site-nav { display: flex; align-items: center; gap: 26px; }
