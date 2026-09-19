@@ -46,11 +46,11 @@ const closeMenu = () => { navOpen.value = false }
 .site-header {
     min-height: 72px; display: flex; align-items: center; justify-content: space-between;
     padding: 14px 18px; border-radius: 18px;
-    background: color-mix(in srgb, var(--color-bg-raised) 94%, transparent);
+    background: var(--color-bg-raised);
     border-color: var(--color-border-default);
-    box-shadow: 0 8px 28px rgba(0,0,0,.25);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 [data-theme="sunset"] .brand__mark { color: var(--color-text-primary); }
 .brand {
