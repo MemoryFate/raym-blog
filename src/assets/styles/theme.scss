@@ -41,12 +41,14 @@
     --sky-glow-secondary:rgba(126,215,255,.20);
 
     --sky-glow-primary-position:43% -36%;
+    --sky-glow-primary-size:59.52% 59.52%;
     --sky-glow-secondary-position:-26% 48%;
+    --sky-glow-secondary-size:54.35% 54.35%;
     --sky-mid-stop:58%;
 
     --background-gradient:
-        radial-gradient(ellipse 58% 56% at var(--sky-glow-primary-position), var(--sky-glow-primary), transparent 100%),
-        radial-gradient(ellipse 54% 54% at var(--sky-glow-secondary-position), var(--sky-glow-secondary), transparent 100%),
+        radial-gradient(ellipse var(--sky-glow-primary-size) at var(--sky-glow-primary-position), var(--sky-glow-primary), transparent 100%),
+        radial-gradient(ellipse var(--sky-glow-secondary-size) at var(--sky-glow-secondary-position), var(--sky-glow-secondary), transparent 100%),
         linear-gradient(180deg, var(--sky-start) 0%, var(--sky-mid) var(--sky-mid-stop), var(--sky-end) 100%);
 
     --shadow-panel:0 8px 28px rgba(0,0,0,.18);
@@ -57,29 +59,37 @@
 
 [data-theme="dawn"] {
     color-scheme: light;
-    --sky-glow-primary-position:44% -31%;
-    --sky-glow-secondary-position:-23% 48%;
+    --sky-glow-primary-position:44.44% -31.11%;
+    --sky-glow-primary-size:55.56% 55.56%;
+    --sky-glow-secondary-position:-23.16% 48.42%;
+    --sky-glow-secondary-size:52.63% 52.63%;
     --sky-mid-stop:55%;
 }
 
 [data-theme="day"] {
     color-scheme: light;
-    --sky-glow-primary-position:38% -33%;
-    --sky-glow-secondary-position:-27% 49%;
+    --sky-glow-primary-position:37.78% -33.33%;
+    --sky-glow-primary-size:55.56% 55.56%;
+    --sky-glow-secondary-position:-26.53% 48.98%;
+    --sky-glow-secondary-size:51.02% 51.02%;
     --sky-mid-stop:55%;
 }
 
 [data-theme="sunset"] {
     color-scheme: dark;
-    --sky-glow-primary-position:-29% 21%;
-    --sky-glow-secondary-position:-31% 53%;
+    --sky-glow-primary-position:-29.17% 20.83%;
+    --sky-glow-primary-size:52.08% 52.08%;
+    --sky-glow-secondary-position:-31.11% 53.33%;
+    --sky-glow-secondary-size:55.56% 55.56%;
     --sky-mid-stop:52%;
 }
 
 [data-theme="night"] {
     color-scheme: dark;
-    --sky-glow-primary-position:43% -36%;
-    --sky-glow-secondary-position:-26% 48%;
+    --sky-glow-primary-position:42.86% -35.71%;
+    --sky-glow-primary-size:59.52% 59.52%;
+    --sky-glow-secondary-position:-26.09% 47.83%;
+    --sky-glow-secondary-size:54.35% 54.35%;
     --sky-mid-stop:58%;
 }
 
