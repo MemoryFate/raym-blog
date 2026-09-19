@@ -125,7 +125,7 @@
             <div class="theme-head">
                 <div>
                     <p class="eyebrow">时间主题系统</p>
-                    <h2>一天四种氛围，同一套设计语言</h2>
+                    <h2>四时四景，同一套设计语言</h2>
                 </div>
                 <span class="mono">{{ mode === "auto" ? "当前：自动跟随本地时间" : "当前：已手动固定主题" }}</span>
             </div>
@@ -192,10 +192,10 @@ const tools = [
 const previewTool = ref(tools[0])
 
 const themeItems = [
-    { key: "dawn", title: "清晨", caption: "云层渐亮 · 星光渐隐" },
-    { key: "day", title: "白天", caption: "深蓝天空 · 云层更明显" },
-    { key: "sunset", title: "日落", caption: "蓝紫过渡 · 少量暖橙" },
-    { key: "night", title: "夜晚", caption: "星空增强 · 冰蓝霓虹" },
+    { key: "dawn", title: "清晨 · 春", caption: "白中透绿 · 轻、净、新鲜" },
+    { key: "day", title: "白天 · 夏", caption: "绿色主体 · 混入天空蓝" },
+    { key: "sunset", title: "日落 · 秋", caption: "暖金黄 · 棕褐结构 · 少量天空蓝" },
+    { key: "night", title: "夜晚 · 冬", caption: "黑色夜空 · 冷冰蓝" },
 ]
 </script>
 
