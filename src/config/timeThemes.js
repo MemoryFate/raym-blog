@@ -175,8 +175,8 @@ export const themeStates = {
 
             ambientPrimary:c(216,154,72),
             ambientSecondary:c(122,167,199),
-            canvasStar:c(243,217,162,.55),
-            canvasCloud:c(156,122,89,.10),
+            canvasStar:c(243,217,162),
+            canvasCloud:c(156,122,89),
 
             skyStart:c(79,57,39),
             skyMid:c(140,100,54),
@@ -185,10 +185,10 @@ export const themeStates = {
             glowSecondary:c(122,167,199,.12),
         },
         atmosphere:{
-            starDimOpacity:.12,
-            starBrightOpacity:.20,
+            starDimOpacity:.066,
+            starBrightOpacity:.11,
             starCount:64,
-            cloudOpacity:.20,
+            cloudOpacity:.10,
             cloudDensity:.72,
             cloudBlur:26,
             haloOpacity:.22,
