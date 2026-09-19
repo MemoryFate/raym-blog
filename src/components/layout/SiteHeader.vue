@@ -2,7 +2,8 @@
     <header class="header-wrap">
         <NeonGlass as="div" class="site-header" raised :clip="false">
             <RouterLink class="brand" to="/" @click="closeMenu">
-               <span>RayM.</span>
+                <span class="brand__mark" aria-hidden="true">ϟ</span>
+                <span>RayM.</span>
             </RouterLink>
 
             <div class="header-actions">
