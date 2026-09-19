@@ -66,23 +66,23 @@ function cellClass(index, value) {
 <style scoped lang="scss">
 .board{
     width:min(100%,560px);aspect-ratio:1;display:grid;grid-template-columns:repeat(9,1fr);
-    overflow:hidden;border:2px solid var(--color-accent-primary);border-radius:18px;
-    background:var(--color-bg-panel-strong);box-shadow:inset 0 0 36px color-mix(in srgb,var(--color-accent-primary) 7%,transparent);
+    overflow:hidden;border:2px solid var(--color-border-strong);border-radius:18px;
+    background:var(--color-bg-raised);box-shadow:inset 0 0 36px color-mix(in srgb,var(--color-accent-primary) 7%,transparent);
 }
 .cell{
-    display:grid;place-items:center;min-width:0;padding:0;border:0;border-right:1px solid color-mix(in srgb,var(--color-border-glow) 45%,transparent);
-    border-bottom:1px solid color-mix(in srgb,var(--color-border-glow) 45%,transparent);
+    display:grid;place-items:center;min-width:0;padding:0;border:0;border-right:1px solid color-mix(in srgb,var(--color-border-default) 58%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--color-border-default) 58%,transparent);
     color:var(--color-text-primary);background:color-mix(in srgb,var(--color-bg-panel) 82%,transparent);
     font:600 clamp(14px,3vw,22px)/1 "DM Sans",sans-serif;cursor:pointer;transition:background 120ms ease,color 120ms ease,box-shadow 120ms ease;
 }
 .cell:not(.fixed):hover{background:color-mix(in srgb,var(--color-chip-bg) 86%,var(--color-accent-primary) 14%)}
 .cell.fixed{color:var(--color-text-primary);background:color-mix(in srgb,var(--color-bg-panel-strong) 92%,var(--color-text-primary) 8%);cursor:default}
-.cell.related{background:color-mix(in srgb,var(--color-chip-bg) 72%,transparent)}
-.cell.same-value{color:var(--color-accent-primary);background:color-mix(in srgb,var(--color-chip-bg) 82%,var(--color-accent-primary) 18%)}
-.cell.selected{color:var(--color-accent-contrast);background:var(--color-accent-primary);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--color-text-primary) 46%,transparent)}
+.cell.related{background:var(--color-bg-control)}
+.cell.same-value{color:var(--color-accent-primary);background:var(--color-bg-selected)}
+.cell.selected{color:var(--color-text-primary);background:var(--color-bg-selected);box-shadow:inset 0 0 0 2px var(--color-border-strong),var(--shadow-selected)}
 .cell.conflict{color:#ffd4ca;background:color-mix(in srgb,#a83c4b 45%,var(--color-bg-panel-strong))}
-.cell.box-right{border-right:2px solid color-mix(in srgb,var(--color-accent-primary) 68%,transparent)}
-.cell.box-bottom{border-bottom:2px solid color-mix(in srgb,var(--color-accent-primary) 68%,transparent)}
+.cell.box-right{border-right:2px solid color-mix(in srgb,var(--color-border-strong) 72%,transparent)}
+.cell.box-bottom{border-bottom:2px solid color-mix(in srgb,var(--color-border-strong) 72%,transparent)}
 .cell:disabled{opacity:1}
 @media(prefers-reduced-motion:reduce){.cell{transition:none}}
 </style>
