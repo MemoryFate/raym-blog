@@ -80,11 +80,12 @@ defineProps({
 
 .neon-glass--interactive:hover {
     transform:translateY(-4px);
+    background:var(--color-bg-selected);
     border-color:var(--color-border-strong);
     box-shadow:var(--shadow-hover);
 }
 
-.neon-glass--interactive:hover::after { opacity:.04; }
+.neon-glass--interactive:hover::after { opacity:.025; }
 .neon-glass--interactive:active { transform:translateY(-1px); }
 .neon-glass--interactive:active::after { opacity:.08; }
 
