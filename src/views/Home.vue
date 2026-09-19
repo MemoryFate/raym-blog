@@ -37,8 +37,7 @@
         <section class="block">
             <SectionTitle eyebrow="关于我" title="此刻关注的几件事" suffix="/ 04 个节点活跃" />
             <div class="orbit-grid">
-                <NeonGlass v-for="item in orbitItems" :key="item.label" class="card orbit-card"
-                    :selected="item.selected" interactive>
+                <NeonGlass v-for="item in orbitItems" :key="item.label" class="card orbit-card" interactive>
                     <i>{{ item.icon }}</i>
                     <p class="eyebrow">{{ item.label }}</p>
                     <h3>{{ item.title }}</h3>
@@ -161,7 +160,7 @@ const SectionTitle = defineComponent({
 const orbitItems = [
     { icon: "◎", label: "关于", title: "默认保持好奇", description: "我喜欢设计、代码与一个好问题相遇的地方。" },
     { icon: "▣", label: "关注", title: "让复杂变得更清楚", description: "持续探索 AI、数据与业务流程如何组合成真正可用的产品。" },
-    { icon: "≋", label: "技术栈", title: "小而锋利的工具", description: "Vue、Java、Python、PostgreSQL，以及大量持续迭代。", selected: true },
+    { icon: "≋", label: "技术栈", title: "小而锋利的工具", description: "Vue、Java、Python、PostgreSQL，以及大量持续迭代。" },
     { icon: "✣", label: "现在", title: "给想法留出空间", description: "记录原型、项目、踩坑和那些值得再次回看的思路。" },
 ]
 
@@ -253,7 +252,7 @@ const themeItems = [
 .primary {
     color: var(--color-accent-contrast);
     background: var(--color-action-primary);
-    box-shadow: 0 8px 24px rgba(26, 166, 255, .30);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--color-action-primary) 30%, transparent);
 }
 
 .secondary {
