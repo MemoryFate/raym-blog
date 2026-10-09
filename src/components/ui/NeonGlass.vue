@@ -38,8 +38,8 @@ defineProps({
     transition:
         transform 190ms ease,
         border-color 190ms ease,
-        box-shadow 190ms ease,
-        /* Never animate UI surface against independently switched text. */
+        box-shadow 190ms ease;
+    /* Do not animate surface independently from its foreground. */
 }
 
 .neon-glass--raised,
