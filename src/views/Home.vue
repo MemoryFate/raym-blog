@@ -181,9 +181,9 @@ const tools = [
 const previewTool = ref(tools[0])
 
 const themeItems = [
-    { key: "dawn", title: "晨曦 · 春", caption: "白中透绿 · 轻、净、新鲜" },
-    { key: "day", title: "晴岚 · 夏", caption: "绿色主体 · 混入天空蓝" },
-    { key: "sunset", title: "暮光 · 秋", caption: "暖金黄 · 棕褐结构 · 少量天空蓝" },
+    { key: "dawn", title: "青岚 · 春", caption: "青绿云岚 · 渐染天蓝" },
+    { key: "day", title: "碧霄 · 夏", caption: "盛夏绿意 · 清透天空蓝" },
+    { key: "sunset", title: "暮光 · 秋", caption: "天际蓝过渡至麦穗金" },
     { key: "night", title: "星夜 · 冬", caption: "黑色夜空 · 冷冰蓝" },
 ]
 </script>
