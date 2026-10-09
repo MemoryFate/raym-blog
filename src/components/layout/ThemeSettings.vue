@@ -108,17 +108,17 @@ const manualTimeLabel = computed(() => {
 })
 
 const currentThemeLabel = computed(() => ({
-    dawn:"晨曦 · 春",
-    day:"晴岚 · 夏",
+    dawn:"青岚 · 春",
+    day:"碧霄 · 夏",
     sunset:"暮光 · 秋",
     night:"星夜 · 冬",
 })[theme.value] || "自动")
 
 const options = [
     { key:"auto", label:"自动", description:"跟随本地时间连续变化" },
-    { key:"dawn", label:"晨曦", description:"白中透绿 · 春日清晨" },
-    { key:"day", label:"晴岚", description:"绿色为主 · 混入天空蓝" },
-    { key:"sunset", label:"暮光", description:"金黄为主 · 暖棕承接" },
+    { key:"dawn", label:"青岚", description:"青绿云岚 · 渐染天蓝" },
+    { key:"day", label:"碧霄", description:"盛夏绿意 · 清透天空蓝" },
+    { key:"sunset", label:"暮光", description:"天际蓝渐变麦穗金" },
     { key:"night", label:"星夜", description:"黑色夜空 · 冷冰蓝" },
 ]
 
@@ -286,9 +286,10 @@ onBeforeUnmount(() => {
     background:linear-gradient(
         90deg,
         #07131d 0%,
-        #dfeee5 27%,
+        #acdcc4 27%,
         #c9e9dd 52%,
-        #a9793e 76%,
+        #77aece 68%,
+        #edc777 76%,
         #07131d 100%
     );
     box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-border-default) 72%,transparent);
@@ -312,9 +313,10 @@ onBeforeUnmount(() => {
     background:linear-gradient(
         90deg,
         #07131d 0%,
-        #dfeee5 27%,
+        #acdcc4 27%,
         #c9e9dd 52%,
-        #a9793e 76%,
+        #77aece 68%,
+        #edc777 76%,
         #07131d 100%
     );
 }
@@ -397,11 +399,11 @@ onBeforeUnmount(() => {
 }
 
 .swatch--auto {
-    background:linear-gradient(135deg,#f2f6f1,#258f69 36%,#d9a24a 68%,#05090e);
+    background:linear-gradient(135deg,#07131d,#acdcc4 28%,#9bcee2 47%,#edc777 76%,#07131d);
 }
 
 .swatch--dawn {
-    background:linear-gradient(135deg,#f3f7f2,#e7f1ea 55%,#ddeae4);
+    background:linear-gradient(135deg,#dbf3e1,#acdcc4 52%,#9bcee2);
 }
 
 .swatch--day {
@@ -409,7 +411,7 @@ onBeforeUnmount(() => {
 }
 
 .swatch--sunset {
-    background:linear-gradient(135deg,#4f3927,#8c6436 52%,#a9793e);
+    background:linear-gradient(135deg,#77aece,#aec6c8 52%,#edc777);
 }
 
 .swatch--night {
