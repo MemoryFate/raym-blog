@@ -22,6 +22,7 @@
     --color-on-sky-primary:#ffffff;
     --color-on-sky-secondary:#ffffff;
     --color-on-sky-accent:#ffffff;
+    --color-on-sky-halo:rgba(0,0,0,0);
 
     --color-accent-primary:#78cff6;
     --color-accent-secondary:#a9e7ff;
@@ -148,3 +149,21 @@ button,a { -webkit-tap-highlight-color:transparent; }
 [data-ui-theme="sunset"] { color-scheme:dark; }
 [data-ui-theme="dawn"],
 [data-ui-theme="day"] { color-scheme:light; }
+
+/* Twilight-only local contrast aid, invisible at the four reference themes. */
+.site-main .hero-copy {
+    position:relative;
+    isolation:isolate;
+}
+.site-main .hero-copy::before {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    inset:-44px -56px;
+    pointer-events:none;
+    background:radial-gradient(
+        ellipse at 42% 46%,
+        var(--color-on-sky-halo) 0%,
+        transparent 76%
+    );
+}
