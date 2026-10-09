@@ -2,13 +2,20 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { semanticThemeForMinute, themeStates, timeThemeKeyframes } from "@/config/timeThemes.js"
 
 const THEME_MODE_KEY = "raym-theme-mode"
-const validModes = ["auto", "dawn", "day", "sunset", "night"]
+const MANUAL_MINUTE_KEY = "raym-theme-manual-minute"
+const validModes = ["auto", "manual", "dawn", "day", "sunset", "night"]
 
 const clamp = (v) => Math.max(0, Math.min(1, v))
 const smoothstep = (v) => { const t = clamp(v); return t * t * (3 - 2 * t) }
 const mix = (a, b, t) => a + (b - a) * t
 const mixArray = (a, b, t) => a.map((v, i) => mix(v, b[i], t))
 const cssRgba = ([r, g, b, a = 1]) => "rgba(" + Math.round(r) + "," + Math.round(g) + "," + Math.round(b) + "," + a.toFixed(3) + ")"
+
+function normalizeMinute(value) {
+    const minute = Number(value)
+    if (!Number.isFinite(minute)) return 0
+    return Math.max(0, Math.min(1439, Math.round(minute)))
+}
 
 function pairForMinute(minute) {
     for (let i = 0; i < timeThemeKeyframes.length - 1; i += 1) {
@@ -61,8 +68,8 @@ export function resolveTimeTheme(date = new Date()) {
     return semanticThemeForMinute(date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60)
 }
 
-export function resolveTimeState(date = new Date()) {
-    const minute = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60
+export function resolveTimeStateByMinute(value) {
+    const minute = normalizeMinute(value)
     const pair = pairForMinute(minute)
     const fromState = themeStates[pair.from.state]
     const toState = themeStates[pair.to.state]
@@ -81,20 +88,32 @@ export function resolveTimeState(date = new Date()) {
 
     return {
         theme: semanticThemeForMinute(minute),
+        minute,
         progress: raw,
         atmosphere,
         styleVars: toStyleVars(tokens),
     }
 }
 
+export function resolveTimeState(date = new Date()) {
+    const minute = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60
+    return resolveTimeStateByMinute(minute)
+}
+
 function resolveStaticState(theme) {
     const state = themeStates[theme] || themeStates.night
     return {
         theme,
+        minute: null,
         progress: 1,
         atmosphere: { ...state.atmosphere },
         styleVars: toStyleVars(state.tokens),
     }
+}
+
+function localMinuteNow() {
+    const date = new Date()
+    return date.getHours() * 60 + date.getMinutes()
 }
 
 function loadSavedMode() {
@@ -103,7 +122,14 @@ function loadSavedMode() {
     return validModes.includes(saved) ? saved : "auto"
 }
 
+function loadSavedManualMinute() {
+    if (typeof window === "undefined") return localMinuteNow()
+    const saved = window.localStorage.getItem(MANUAL_MINUTE_KEY)
+    return saved === null ? localMinuteNow() : normalizeMinute(saved)
+}
+
 const themeMode = ref(loadSavedMode())
+const manualMinute = ref(loadSavedManualMinute())
 const automaticState = ref(resolveTimeState())
 let timerId = null
 let consumers = 0
@@ -133,9 +159,21 @@ export function setThemeMode(mode) {
     if (nextMode === "auto") updateAutomaticState()
 }
 
+export function setManualThemeMinute(value) {
+    const nextMinute = normalizeMinute(value)
+    manualMinute.value = nextMinute
+    themeMode.value = "manual"
+
+    if (typeof window !== "undefined") {
+        window.localStorage.setItem(MANUAL_MINUTE_KEY, String(nextMinute))
+        window.localStorage.setItem(THEME_MODE_KEY, "manual")
+    }
+}
+
 export function useTimeTheme() {
     const activeState = computed(() => {
         if (themeMode.value === "auto") return automaticState.value
+        if (themeMode.value === "manual") return resolveTimeStateByMinute(manualMinute.value)
         return resolveStaticState(themeMode.value)
     })
 
@@ -153,9 +191,12 @@ export function useTimeTheme() {
         theme: computed(() => activeState.value.theme),
         mode: computed(() => themeMode.value),
         isAuto: computed(() => themeMode.value === "auto"),
+        isManual: computed(() => themeMode.value === "manual"),
+        manualMinute: computed(() => manualMinute.value),
         phaseProgress: computed(() => activeState.value.progress),
         styleVars: computed(() => activeState.value.styleVars),
         atmosphere: computed(() => activeState.value.atmosphere),
         setThemeMode,
+        setManualThemeMinute,
     }
 }
