@@ -108,18 +108,18 @@ const manualTimeLabel = computed(() => {
 })
 
 const currentThemeLabel = computed(() => ({
-    dawn:"清晨 · 春",
-    day:"白天 · 夏",
-    sunset:"日落 · 秋",
-    night:"夜晚 · 冬",
+    dawn:"晨曦 · 春",
+    day:"晴岚 · 夏",
+    sunset:"暮光 · 秋",
+    night:"星夜 · 冬",
 })[theme.value] || "自动")
 
 const options = [
     { key:"auto", label:"自动", description:"跟随本地时间连续变化" },
-    { key:"dawn", label:"清晨", description:"白中透绿 · 春日清晨" },
-    { key:"day", label:"白天", description:"绿色为主 · 混入天空蓝" },
-    { key:"sunset", label:"日落", description:"金黄为主 · 暖棕承接" },
-    { key:"night", label:"夜晚", description:"黑色夜空 · 冷冰蓝" },
+    { key:"dawn", label:"晨曦", description:"白中透绿 · 春日清晨" },
+    { key:"day", label:"晴岚", description:"绿色为主 · 混入天空蓝" },
+    { key:"sunset", label:"暮光", description:"金黄为主 · 暖棕承接" },
+    { key:"night", label:"星夜", description:"黑色夜空 · 冷冰蓝" },
 ]
 
 function selectTheme(nextMode) {
