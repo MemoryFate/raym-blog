@@ -49,6 +49,14 @@ function showRecoveryNotice(routePath) {
 
 export function installChunkRecovery(router) {
     let recovering = false;
+    let pendingRoute = null;
+
+    router.beforeEach((to) => {
+        pendingRoute = to.fullPath;
+    });
+    router.afterEach(() => {
+        pendingRoute = null;
+    });
 
     function recover(routePath) {
         if (recovering) return;
@@ -82,7 +90,7 @@ export function installChunkRecovery(router) {
     window.addEventListener("vite:preloadError", (event) => {
         if (!isChunkLoadError(event.payload)) return;
         event.preventDefault();
-        recover(null);
+        recover(pendingRoute);
     });
 
     // Vue Router reports failures for any page loaded via () => import(...).
