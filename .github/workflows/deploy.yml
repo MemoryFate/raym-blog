@@ -39,6 +39,8 @@ jobs:
         run: npm install
       - name: 检查主题对比度
         run: npm run test:theme
+      - name: 检查懒加载资源恢复
+        run: npm run test:chunks
       - name: 构建
         run: npm run build
       - name: 设置页面
