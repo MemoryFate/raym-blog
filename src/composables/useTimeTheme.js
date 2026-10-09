@@ -35,7 +35,7 @@ function contrastRatio(a, b) {
 
 function readableColor(color, backgrounds, minimum, lighter) {
     if (backgrounds.every((bg) => contrastRatio(color, bg) >= minimum)) return color
-    const limit = lighter ? [255, 255, 255] : [0, 8, 9]
+    const limit = lighter ? [255, 255, 255, 1] : [0, 8, 9, 1]
     let low = 0
     let high = 1
     for (let i = 0; i < 16; i += 1) {
