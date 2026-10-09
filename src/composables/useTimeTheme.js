@@ -64,17 +64,34 @@ function maintainUiContrast(tokens, uiTheme) {
 }
 
 function skyReadableVars(tokens) {
+    // Hero and section headlines sit in the upper sky, not over card surfaces.
     const stops = [tokens.skyStart, tokens.skyMid]
-    const darkInk = [0, 9, 8]
-    const lightInk = [255, 255, 255]
+    const darkInk = [0, 9, 8, 1]
+    const lightInk = [255, 255, 255, 1]
     const worstContrast = (color) => Math.min(...stops.map((bg) => contrastRatio(color, bg)))
     const primary = worstContrast(lightInk) >= worstContrast(darkInk) ? lightInk : darkInk
-    // Sky-facing copy deliberately uses a high contrast neutral through twilight.
-    // Accent hues on cards remain controlled by the independent UI palette.
+    const lightText = primary === lightInk
+
+    function readableOnSky(candidate) {
+        const adjusted = readableColor(candidate, stops, 4.7, lightText)
+        return worstContrast(adjusted) >= 4.5 ? adjusted : primary
+    }
+
+    const secondary = readableOnSky(tokens.textSecondary)
+    const accent = readableOnSky(tokens.accentPrimary)
+    // A localized halo is used only during the narrow moments where a single
+    // text color cannot clear 4.5:1 across both sky gradient stops.
+    const deficit = Math.max(0, 4.7 - worstContrast(primary))
+    const haloOpacity = Math.min(0.42, deficit * 0.36)
+    const halo = lightText
+        ? [0, 6, 9, haloOpacity]
+        : [255, 255, 255, haloOpacity]
+
     return {
         "--color-on-sky-primary": cssRgba(primary),
-        "--color-on-sky-secondary": cssRgba(primary),
-        "--color-on-sky-accent": cssRgba(primary),
+        "--color-on-sky-secondary": cssRgba(secondary),
+        "--color-on-sky-accent": cssRgba(accent),
+        "--color-on-sky-halo": cssRgba(halo),
     }
 }
 
