@@ -1,5 +1,5 @@
 <template>
-    <div class="site-shell" :data-theme="theme" :style="styleVars">
+    <div class="site-shell" :data-theme="theme" :data-ui-theme="uiTheme" :style="styleVars">
         <AtmosphereBackground :theme="theme" :visual="atmosphere" />
         <div class="site-layer">
             <SiteHeader />
@@ -21,7 +21,7 @@ import SiteFooter from "@/components/layout/SiteFooter.vue"
 import SiteHeader from "@/components/layout/SiteHeader.vue"
 import { useTimeTheme } from "@/composables/useTimeTheme.js"
 
-const { theme, styleVars, atmosphere } = useTimeTheme()
+const { theme, uiTheme, styleVars, atmosphere } = useTimeTheme()
 </script>
 
 <style scoped lang="scss">
@@ -31,7 +31,7 @@ const { theme, styleVars, atmosphere } = useTimeTheme()
     min-height: 100vh;
     color: var(--color-text-primary);
     background: var(--color-bg-base);
-    transition: color 240ms ease, background 600ms ease;
+    /* Foreground text and card surfaces change atomically for readability. */
 }
 .site-layer { position: relative; z-index: 1; min-height: 100vh; padding-top: 18px; }
 .site-main { position: relative; min-height: calc(100vh - 210px); }
