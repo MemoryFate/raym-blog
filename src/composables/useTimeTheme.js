@@ -1,5 +1,5 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
-import { semanticThemeForMinute, themeStates, timeThemeKeyframes } from "@/config/timeThemes.js"
+import { semanticThemeForMinute, themeStates, timeThemeKeyframes } from "../config/timeThemes.js"
 
 const THEME_MODE_KEY = "raym-theme-mode"
 const MANUAL_MINUTE_KEY = "raym-theme-manual-minute"
