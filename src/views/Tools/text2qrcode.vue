@@ -67,20 +67,25 @@
                 <div class="result-block">
                     <div class="result-head">
                         <div><p class="eyebrow">生成结果</p><h3>{{ data.showCopy ? "二维码已生成" : "等待生成" }}</h3></div>
-                        <span class="mono">{{ data.formData.pixel }} × {{ data.formData.pixel }}</span>
+                        <span class="mono">{{ data.showCopy ? `${data.generatedPixel} × ${data.generatedPixel} px · 实际输出` : "待生成" }}</span>
                     </div>
 
                     <div class="qr-stage" :class="{ ready: data.showCopy }">
                         <canvas
                             id="qrcode"
-                            :height="data.formData.pixel"
-                            :width="data.formData.pixel"
+                            :style="{ width: (data.generatedPixel || 400) + 'px' }"
+                            :aria-label="'二维码预览，实际尺寸 ' + data.generatedPixel + ' 乘 ' + data.generatedPixel + ' 像素'"
                         ></canvas>
                         <div v-if="!data.showCopy" class="placeholder">
                             <span>▦</span>
                             <p>生成后将在这里预览</p>
                         </div>
                     </div>
+
+                    <p v-if="data.showCopy" class="preview-note">
+                        预览按当前容器自适应，PNG 导出保持 {{ data.generatedPixel }} × {{ data.generatedPixel }} px。
+                        调整尺寸后将自动重新生成。
+                    </p>
 
                     <div v-if="data.showCopy" class="result-actions">
                         <button type="button" @click="copyToClipBoard">复制图片</button>
@@ -107,7 +112,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue"
+import { onBeforeUnmount, reactive, ref, watch } from "vue"
 import QRCode from "qrcode"
 import { message } from "ant-design-vue"
 import { PlusOutlined } from "@ant-design/icons-vue"
@@ -117,6 +122,7 @@ const formRef = ref()
 const data = reactive({
     formData: { text: "", level: "M", pixel: 400 },
     showCopy: false,
+    generatedPixel: 0,
     fileList: [],
 })
 
@@ -126,10 +132,15 @@ const rules = {
     pixel: [{ required: true, message: "请输入二维码尺寸", trigger: "change" }],
 }
 
+let sizeTimer = null
+
 function reset() {
+    if (sizeTimer !== null) clearTimeout(sizeTimer)
+    sizeTimer = null
+    data.showCopy = false
+    data.generatedPixel = 0
     data.formData = { text: "", level: "M", pixel: 400 }
     data.fileList = []
-    data.showCopy = false
     const canvas = document.getElementById("qrcode")
     const ctx = canvas?.getContext("2d")
     if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -168,13 +179,15 @@ async function drawCenterIcon(canvas, pixel) {
     ctx.drawImage(img, iconX, iconY, iconSize, iconSize)
 }
 
-async function convertQRCode() {
+async function convertQRCode({ silent = false } = {}) {
     try {
         await formRef.value.validate()
         const canvas = document.getElementById("qrcode")
+        if (!canvas) throw new Error("二维码画布不存在")
         const pixel = Number(data.formData.pixel)
-        canvas.width = pixel
-        canvas.height = pixel
+        if (!Number.isInteger(pixel) || pixel < 120 || pixel > 900) {
+            throw new Error("二维码尺寸应在 120～900 px 之间")
+        }
 
         await QRCode.toCanvas(canvas, data.formData.text, {
             width: pixel,
@@ -182,17 +195,35 @@ async function convertQRCode() {
             margin: 2,
         })
 
-        await drawCenterIcon(canvas, pixel)
+        await drawCenterIcon(canvas, canvas.width)
+        // The library writes the real canvas resolution. Do not bind its
+        // width/height HTML attributes to the form: changes would clear it.
+        data.generatedPixel = canvas.width
         data.showCopy = true
-        message.success("二维码已生成")
+        if (!silent) message.success("二维码已生成")
     } catch (error) {
-        if (error?.errorFields) {
-            message.warning("请先完成必要输入")
-        } else {
-            message.error(error?.message || "生成失败")
+        if (!silent) {
+            if (error?.errorFields) message.warning("请先完成必要输入")
+            else message.error(error?.message || "生成失败")
         }
     }
 }
+
+// After a QR has been generated, changing the requested resolution updates
+// both the actual PNG bitmap and the responsive preview.
+watch(() => data.formData.pixel, (value) => {
+    if (sizeTimer !== null) clearTimeout(sizeTimer)
+    if (!data.showCopy || !data.formData.text) return
+    if (!Number.isInteger(Number(value)) || Number(value) < 120 || Number(value) > 900) return
+    sizeTimer = window.setTimeout(() => {
+        sizeTimer = null
+        void convertQRCode({ silent: true })
+    }, 200)
+})
+
+onBeforeUnmount(() => {
+    if (sizeTimer !== null) clearTimeout(sizeTimer)
+})
 
 function canvasBlob() {
     const canvas = document.getElementById("qrcode")
@@ -254,7 +285,7 @@ async function downloadQrCode() {
 </script>
 
 <style scoped lang="scss">
-.tool-detail{width:min(1180px,calc(100% - 40px));margin:48px auto 0}.back{color:var(--color-text-secondary);font-size:11px;text-decoration:none}.eyebrow{margin:0;color:var(--color-accent-primary);font-size:10px;letter-spacing:.14em}.tool-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin:34px 0 36px}.tool-head h1{margin:14px 0;font-size:clamp(42px,5vw,54px);letter-spacing:-.04em}.tool-head p:last-child{max-width:700px;margin:0;color:var(--color-text-secondary);font-size:15px;line-height:1.75}.status{color:var(--color-accent-primary);font-size:10px}.tool-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}.work-surface{padding:26px}.surface-head{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}.surface-head h2{margin:8px 0 0;font-size:26px}.surface-head>span{color:var(--color-text-secondary);font-size:10px}.form-grid{display:grid;grid-template-columns:1fr 220px;gap:18px}.size-row{display:flex;align-items:center;gap:10px}.size-row span{color:var(--color-text-secondary);font-size:10px}.upload-copy{margin-top:6px;font-size:11px}.actions{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}.result-block{position:relative;z-index:1;margin-top:32px;padding-top:28px;border-top:1px solid color-mix(in srgb,var(--color-border-default) 58%,transparent)}.result-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.result-head h3{margin:8px 0 0;font-size:20px}.result-head>span{color:var(--color-text-secondary);font-size:10px}.qr-stage{position:relative;display:grid;min-height:360px;margin-top:18px;place-items:center;border:1px dashed var(--color-border-default);border-radius:18px;background:var(--color-bg-raised);overflow:hidden}.qr-stage canvas{display:none;width:min(100%,420px);max-width:420px;height:auto!important;max-height:420px;aspect-ratio:1/1;object-fit:contain;background:#fff}.qr-stage.ready canvas{display:block}.placeholder{display:grid;place-items:center;color:var(--color-text-secondary)}.placeholder span{color:var(--color-accent-primary);font-size:38px}.placeholder p{margin:12px 0 0;font-size:12px}.result-actions{display:flex;gap:10px;margin-top:14px}.result-actions button{min-height:42px;padding:0 16px;border:1px solid var(--color-border-default);border-radius:11px;color:var(--color-text-primary);background:var(--color-bg-control);cursor:pointer}.side-stack{display:grid;align-content:start;gap:20px}.side-card{padding:22px}.side-card>*{position:relative;z-index:1}.side-card h3{margin:12px 0;font-size:20px;line-height:1.35}.side-card p:last-child{margin:0;color:var(--color-text-secondary);font-size:13px;line-height:1.75}
+.tool-detail{width:min(1180px,calc(100% - 40px));margin:48px auto 0}.back{color:var(--color-text-secondary);font-size:11px;text-decoration:none}.eyebrow{margin:0;color:var(--color-accent-primary);font-size:10px;letter-spacing:.14em}.tool-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin:34px 0 36px}.tool-head h1{margin:14px 0;font-size:clamp(42px,5vw,54px);letter-spacing:-.04em}.tool-head p:last-child{max-width:700px;margin:0;color:var(--color-text-secondary);font-size:15px;line-height:1.75}.status{color:var(--color-accent-primary);font-size:10px}.tool-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}.work-surface{padding:26px}.surface-head{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}.surface-head h2{margin:8px 0 0;font-size:26px}.surface-head>span{color:var(--color-text-secondary);font-size:10px}.form-grid{display:grid;grid-template-columns:1fr 220px;gap:18px}.size-row{display:flex;align-items:center;gap:10px}.size-row span{color:var(--color-text-secondary);font-size:10px}.upload-copy{margin-top:6px;font-size:11px}.actions{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}.result-block{position:relative;z-index:1;margin-top:32px;padding-top:28px;border-top:1px solid color-mix(in srgb,var(--color-border-default) 58%,transparent)}.result-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}.result-head h3{margin:8px 0 0;font-size:20px}.result-head>span{color:var(--color-text-secondary);font-size:10px}.qr-stage{position:relative;display:grid;min-height:360px;margin-top:18px;place-items:center;border:1px dashed var(--color-border-default);border-radius:18px;background:var(--color-bg-raised);overflow:hidden}.qr-stage canvas{display:none;max-width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;background:#fff}.qr-stage.ready canvas{display:block}.placeholder{display:grid;place-items:center;color:var(--color-text-secondary)}.placeholder span{color:var(--color-accent-primary);font-size:38px}.placeholder p{margin:12px 0 0;font-size:12px}.preview-note{margin:10px 0 0;color:var(--color-text-secondary);font-size:11px;line-height:1.6}.result-actions{display:flex;gap:10px;margin-top:14px}.result-actions button{min-height:42px;padding:0 16px;border:1px solid var(--color-border-default);border-radius:11px;color:var(--color-text-primary);background:var(--color-bg-control);cursor:pointer}.side-stack{display:grid;align-content:start;gap:20px}.side-card{padding:22px}.side-card>*{position:relative;z-index:1}.side-card h3{margin:12px 0;font-size:20px;line-height:1.35}.side-card p:last-child{margin:0;color:var(--color-text-secondary);font-size:13px;line-height:1.75}
 :deep(.ant-form-item-label>label){color:var(--color-text-primary)!important}:deep(.ant-input),:deep(.ant-input-number),:deep(.ant-radio-button-wrapper){color:var(--color-text-primary)!important;background:var(--color-bg-control)!important;border-color:var(--color-border-default)!important}:deep(.ant-input::placeholder){color:color-mix(in srgb,var(--color-text-secondary) 70%,transparent)}:deep(.ant-radio-button-wrapper-checked){color:var(--color-accent-contrast)!important;background:var(--color-action-primary)!important}:deep(.ant-btn-primary){color:var(--color-accent-contrast);background:var(--color-action-primary);border-color:var(--color-action-primary)}
 @media(max-width:900px){.tool-layout{grid-template-columns:1fr}.side-stack{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.tool-detail{margin-top:38px}.tool-head{align-items:flex-start;flex-direction:column}.form-grid,.side-stack{grid-template-columns:1fr}.actions,.result-actions{flex-direction:column}.actions :deep(.ant-btn),.result-actions button{width:100%}.qr-stage{min-height:300px}.work-surface{padding:20px}}
