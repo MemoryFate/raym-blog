@@ -7,7 +7,8 @@
         "dev": "vite --host",
         "build": "vite build",
         "preview": "vite preview",
-        "test:theme": "node --test tests/theme-contrast.test.mjs"
+        "test:theme": "node --test tests/theme-contrast.test.mjs",
+        "test:chunks": "node --test tests/chunk-recovery.test.mjs"
     },
     "dependencies": {
         "ant-design-vue": "^4.2.3",
