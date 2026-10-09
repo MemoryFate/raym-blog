@@ -64,7 +64,7 @@ function maintainUiContrast(tokens, uiTheme) {
 }
 
 function skyReadableVars(tokens) {
-    const stops = [tokens.skyStart, tokens.skyMid, tokens.skyEnd]
+    const stops = [tokens.skyStart, tokens.skyMid]
     const darkInk = [0, 9, 8]
     const lightInk = [255, 255, 255]
     const worstContrast = (color) => Math.min(...stops.map((bg) => contrastRatio(color, bg)))
@@ -145,9 +145,7 @@ export function resolveTimeStateByMinute(value) {
     const progress = smoothstep(raw)
 
     const changesContrastMode = isLightTheme(pair.from.state) !== isLightTheme(pair.to.state)
-    const uiTheme = changesContrastMode
-        ? (progress < 0.5 ? pair.from.state : pair.to.state)
-        : semanticThemeForMinute(minute)
+    const uiTheme = progress < 0.5 ? pair.from.state : pair.to.state
 
     const tokens = {}
     Object.keys(fromState.tokens).forEach((key) => {
