@@ -37,6 +37,8 @@ jobs:
           cache: 'npm'
       - name: 安装依赖
         run: npm install
+      - name: 检查主题对比度
+        run: npm run test:theme
       - name: 构建
         run: npm run build
       - name: 设置页面
