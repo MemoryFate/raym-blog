@@ -19,6 +19,9 @@
     --color-text-primary:#eaf6ff;
     --color-text-secondary:#96afbf;
     --color-text-on-accent:#041018;
+    --color-on-sky-primary:#ffffff;
+    --color-on-sky-secondary:#ffffff;
+    --color-on-sky-accent:#ffffff;
 
     --color-accent-primary:#78cff6;
     --color-accent-secondary:#a9e7ff;
@@ -124,3 +127,24 @@ button,a { -webkit-tap-highlight-color:transparent; }
 .mono,.eyebrow {
     font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
 }
+
+
+/*
+ * Sky-facing text uses independently resolved high-contrast foreground colors.
+ * Semantic UI variables inside cards stay on their matching surface palette.
+ */
+.site-main :is(.hero-copy,.section-title,.theme-head,.tool-head,.lab-head) {
+    --color-text-primary:var(--color-on-sky-primary);
+    --color-heading-primary:var(--color-on-sky-primary);
+    --color-text-secondary:var(--color-on-sky-secondary);
+    --color-accent-primary:var(--color-on-sky-accent);
+}
+
+.site-main :is(.tool-detail,.lab-detail) > .back {
+    color:var(--color-on-sky-secondary);
+}
+
+[data-ui-theme="night"],
+[data-ui-theme="sunset"] { color-scheme:dark; }
+[data-ui-theme="dawn"],
+[data-ui-theme="day"] { color-scheme:light; }
