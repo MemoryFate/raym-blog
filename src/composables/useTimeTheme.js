@@ -17,7 +17,7 @@ const skyTokenNames = new Set([
     "skyStart", "skyMid", "skyEnd", "glowPrimary", "glowSecondary",
     "ambientPrimary", "ambientSecondary", "canvasStar", "canvasCloud",
 ])
-const isLightTheme = (theme) => theme === "dawn" || theme === "day"
+const isLightTheme = (theme) => theme === "dawn" || theme === "day" || theme === "sunset"
 
 function luminance(color) {
     const channels = color.slice(0, 3).map((channel) => {
