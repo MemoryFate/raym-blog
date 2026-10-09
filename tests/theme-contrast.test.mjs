@@ -1,6 +1,7 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 import { resolveTimeStateByMinute } from "../src/composables/useTimeTheme.js"
+import { themeStates } from "../src/config/timeThemes.js"
 
 function rgb(style) {
     const match = /^rgba?\(([^)]+)\)$/.exec(style)
@@ -67,5 +68,21 @@ test("twilight hours switch a matched text-and-surface palette together", () => 
         assert.ok(sample.theme, label + ": missing phase theme")
         assert.ok(sample.styleVars["--sky-mid"], label + ": missing interpolated sky")
         assert.ok(sample.styleVars["--color-on-sky-primary"], label + ": missing readable sky text")
+    }
+})
+
+test("青岚和暮光使用明确的青绿→蓝、天空蓝→麦穗金调色逻辑", () => {
+    const dawn = themeStates.dawn.tokens
+    const sunset = themeStates.sunset.tokens
+
+    assert.ok(dawn.skyMid[1] > dawn.skyMid[0], "青岚中段应该以青绿为主")
+    assert.ok(dawn.skyEnd[2] > dawn.skyEnd[0], "青岚末端应该融入天空蓝")
+    assert.ok(sunset.skyStart[2] > sunset.skyStart[0], "暮光上方应该是蓝色")
+    assert.ok(sunset.skyEnd[0] > sunset.skyEnd[2] * 1.5, "暮光下方应该是麦穗金黄色")
+
+    for (const minute of [324, 390, 990, 1044, 1090, 1160, 1230]) {
+        const vars = resolveTimeStateByMinute(minute).styleVars
+        assert.ok(vars["--sky-start"], minute + ": 缺少天空渐变")
+        assert.ok(vars["--color-bg-panel"], minute + ": 缺少卡片底色")
     }
 })
