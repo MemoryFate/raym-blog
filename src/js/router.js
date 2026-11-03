@@ -10,6 +10,7 @@ const routes = [
     { path:"/Tools/randomstr", component:() => import("@/views/Tools/randomstr.vue"), name:"randomstr" },
     { path:"/Tools/aes-gcm", component:() => import("@/views/Tools/aes-gcm.vue"), name:"aes-gcm" },
     { path:"/Tools/base64", component:() => import("@/views/Tools/base64.vue"), name:"base64" },
+    { path:"/Tools/url-encode", component:() => import("@/views/Tools/url-encode.vue"), name:"url-encode" },
 
     { path:"/Lab", component:() => import("@/views/Lab/index.vue"), name:"Lab" },
     { path:"/Game", redirect:"/Lab" },

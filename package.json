@@ -8,7 +8,8 @@
         "build": "vite build",
         "preview": "vite preview",
         "test:theme": "node --test tests/theme-contrast.test.mjs",
-        "test:chunks": "node --test tests/chunk-recovery.test.mjs"
+        "test:chunks": "node --test tests/chunk-recovery.test.mjs",
+        "test:url": "node --test tests/url-codec.test.mjs"
     },
     "dependencies": {
         "ant-design-vue": "^4.2.3",

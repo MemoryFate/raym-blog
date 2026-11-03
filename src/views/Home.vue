@@ -174,6 +174,7 @@ const tools = [
     { name: "随机字符串", short: "Random String", type: "工具", icon: "Aa", path: "/Tools/randomstr", description: "按长度和字符集快速生成随机内容，适合测试数据、占位符和临时标识。", tags: ["长度", "字符集", "批量"], sample: "raym_8K2mQ7xP" },
     { name: "AES-GCM", short: "加密 / 解密", type: "安全", icon: "⌾", path: "/Tools/aes-gcm", description: "在本地完成 AES-GCM 加密与解密，并清晰展示密钥、IV 与结果状态。", tags: ["AES", "GCM", "本地处理"], sample: "ciphertext + iv" },
     { name: "Base64", short: "编码 / 转换", type: "转换", icon: "64", path: "/Tools/base64", description: "处理文本、图片和常见文件的 Base64 编码与解码。", tags: ["文本", "文件", "预览"], sample: "SGVsbG8gUmF5TQ==" },
+    { name: "URL 编解码", short: "Percent Encoding", type: "转换", icon: "%", path: "/Tools/url-encode", description: "快速处理 URL 百分号编码、解码及空格转换，支持复制和交换结果。", tags: ["UTF-8", "URL", "本地处理"], sample: "%E4%BD%A0%E5%A5%BD" },
     { name: "迷宫", short: "Maze", type: "实验", icon: "⌗", path: "/Game/Maze", description: "随机生成迷宫并进行寻路与交互实验，保留轻量、可玩的体验。", tags: ["生成", "寻路", "游戏"], sample: "A* / DFS" },
     { name: "数独", short: "Sudoku", type: "实验", icon: "9×9", path: "/Game/Sudoku", description: "生成不同难度的数独，并围绕状态、校验和交互进行实验。", tags: ["逻辑", "状态", "游戏"], sample: "36 / 81 已填写" },
 ]

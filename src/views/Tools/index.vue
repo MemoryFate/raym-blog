@@ -39,6 +39,7 @@ const tools = [
     { type:"实用工具", title:"随机字符串", description:"根据长度和字符集生成测试数据、占位符和临时标识。", path:"/Tools/randomstr" },
     { type:"安全", title:"AES-GCM", description:"在本地完成 AES-GCM 加密与解密，并清晰展示关键参数和结果。", path:"/Tools/aes-gcm" },
     { type:"转换", title:"Base64", description:"处理文本、图片和常见文件的 Base64 编码与解码。", path:"/Tools/base64" },
+    { type:"转换", title:"URL 编码/解码", description:"使用 UTF-8 百分号编码或解码文本，支持空格转换与复制结果。", path:"/Tools/url-encode" },
 ]
 </script>
 
