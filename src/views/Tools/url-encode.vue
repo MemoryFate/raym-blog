@@ -6,7 +6,7 @@
             <div>
                 <p class="eyebrow">工具 / 文本转换</p>
                 <h1>URL 编码/解码</h1>
-                <p>对 URL 字符串进行百分号编码与解码，支持 UTF-8 中文和特殊字符。</p>
+                <p>对 URL 字符串进行百分号编码与解码，支持 UTF-8、GBK、GB18030、Big5 等常用字符编码。</p>
             </div>
             <span class="mono local-status">● 浏览器本地处理</span>
         </header>
@@ -33,7 +33,7 @@
             <div class="toolbar-main">
                 <label class="encoding-setting">
                     <span>字符编码：</span>
-                    <a-select :value="'UTF-8'" :options="encodingOptions" disabled aria-label="字符编码 UTF-8" />
+                    <a-select :value="selectedEncoding" :options="encodingOptions" aria-label="字符编码" @change="changeEncoding" />
                 </label>
                 <a-button type="primary" @click="run('encode')">URL 编码</a-button>
                 <a-button @click="run('decode')">URL 解码</a-button>
@@ -61,15 +61,15 @@
             <div class="result-content" aria-live="polite">
                 <pre v-if="outputText">{{ outputText }}</pre>
                 <p v-else-if="status === 'error'" class="error-hint">
-                    编解码失败，请检查文本中的百分号编码或 UTF-8 字符是否完整。
+                    {{ errorMessage || "编解码失败，请检查百分号编码与字符集是否匹配。" }}
                 </p>
                 <p v-else class="placeholder">结果将显示在这里…</p>
             </div>
         </NeonGlass>
 
         <p class="helper-note">
-            使用 UTF-8 的 encodeURIComponent / decodeURIComponent 规则。普通解码保留原文中的 +；
-            “空格 → +”模式会将解码结果中的普通空格转换为 +。编码整条 URL 时请注意，斜杠和问号也会被转义。
+            选择的字符集用于将文本与字节互转；默认 UTF-8。普通解码保留 +，“空格 → +”模式只替换解码后的普通空格。
+            其他字符集需明确匹配原始编码；目标编码无法表示的字符会报错。URL 编码作用于组件，斜杠和问号也会被转义。
         </p>
     </div>
 </template>
@@ -78,9 +78,19 @@
 import { computed, ref } from "vue"
 import { message } from "ant-design-vue"
 import NeonGlass from "@/components/ui/NeonGlass.vue"
-import { encodeUrlText, decodeUrlText } from "@/utils/urlCodec.js"
+import { URL_ENCODING_OPTIONS, encodeUrlText, decodeUrlText } from "@/utils/urlCodec.js"
 
-const encodingOptions = [{ label:"UTF-8", value:"UTF-8" }]
+const encodingOptions = URL_ENCODING_OPTIONS
+const selectedEncoding = ref("UTF-8")
+const errorMessage = ref("")
+
+function changeEncoding(value) {
+    selectedEncoding.value = value
+    outputText.value = ""
+    status.value = "idle"
+    lastAction.value = ""
+    errorMessage.value = ""
+}
 const inputText = ref("")
 const outputText = ref("")
 const status = ref("idle")
@@ -89,6 +99,7 @@ const characterCount = computed(() => Array.from(inputText.value).length)
 
 function updateInput(value) {
     inputText.value = value
+    errorMessage.value = ""
     outputText.value = ""
     status.value = "idle"
     lastAction.value = ""
@@ -102,18 +113,21 @@ function run(action) {
 
     try {
         if (action === "encode") {
-            outputText.value = encodeUrlText(inputText.value)
+            outputText.value = encodeUrlText(inputText.value, selectedEncoding.value)
             lastAction.value = "URL 编码"
         } else {
-            outputText.value = decodeUrlText(inputText.value, { spaceToPlus:action === "spaceToPlus" })
+            outputText.value = decodeUrlText(inputText.value, { spaceToPlus:action === "spaceToPlus", encoding:selectedEncoding.value })
             lastAction.value = action === "spaceToPlus" ? "URL 解码 · 空格 → +" : "URL 解码"
         }
         status.value = "success"
-    } catch {
+        errorMessage.value = ""
+        lastAction.value += " · " + selectedEncoding.value
+    } catch (error) {
         outputText.value = ""
         status.value = "error"
         lastAction.value = ""
-        message.error("处理失败：请检查 URL 百分号编码或字符格式")
+        errorMessage.value = error instanceof Error ? error.message : "编码或解码失败"
+        message.error("处理失败：" + errorMessage.value)
     }
 }
 
@@ -130,6 +144,7 @@ function swapTexts() {
 }
 
 function clearAll() {
+    errorMessage.value = ""
     inputText.value = ""
     outputText.value = ""
     status.value = "idle"
@@ -251,7 +266,7 @@ async function copyResult() {
 }
 
 .encoding-setting :deep(.ant-select) {
-    width: 116px;
+    width: 190px;
 }
 
 .result-heading,
@@ -365,12 +380,12 @@ async function copyResult() {
     opacity: .55;
 }
 
-:deep(.ant-select-disabled .ant-select-selector) {
+:deep(.encoding-setting .ant-select-selector) {
     border-color: var(--color-border-default) !important;
     background: var(--color-bg-control) !important;
 }
 
-:deep(.ant-select-disabled .ant-select-selection-item) {
+:deep(.encoding-setting .ant-select-selection-item) {
     color: var(--color-text-primary) !important;
 }
 
