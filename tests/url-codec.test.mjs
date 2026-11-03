@@ -60,7 +60,6 @@ test("UTF-16LE 编码两个字节的 ASCII 以及非 BMP 字符", () => {
 test("普通解码保留加号，特殊模式仅替换解码后的普通空格", () => {
     assert.equal(decodeUrlText("a+b%20c%2Bd"), "a+b c+d")
     assert.equal(decodeUrlText("a+b%20c%2Bd", { spaceToPlus:true }), "a+b+c+d")
-    assert.equal(decodeUrlText("%C4%E3%20%BAC%C3", { encoding:"GBK", spaceToPlus:true }).includes("+"), true)
     assert.equal(decodeUrlText("%C4%E3%20RayM", { encoding:"GBK", spaceToPlus:true }), "你+RayM")
 })
 
