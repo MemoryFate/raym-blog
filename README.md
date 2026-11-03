@@ -35,7 +35,7 @@
 | 字符串生成 | 随机字符串，支持多种字符类型 | `/Tools/randomstr` |
 | AES-GCM | 加密解密，密钥本地缓存 | `/Tools/aes-gcm` |
 | Base64 | Base64 与图片/视频互转，支持导入导出 | `/Tools/base64` |
-| URL 编码/解码 | UTF-8 百分号编解码、空格转换与结果复制 | `/Tools/url-encode` |
+| URL 编码/解码 | UTF-8、GBK、GB18030、Big5、Shift_JIS、Latin-1、Windows-1252、UTF-16LE 百分号编解码 | `/Tools/url-encode` |
 
 ### 示例 (Demo)
 
