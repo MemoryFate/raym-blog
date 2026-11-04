@@ -231,23 +231,39 @@ function loadSavedManualMinute() {
 
 const themeMode = ref(loadSavedMode())
 const manualMinute = ref(loadSavedManualMinute())
-const automaticState = ref(resolveTimeState())
+const automaticState = ref(resolveTimeStateByMinute(localMinuteNow()))
 let timerId = null
 let consumers = 0
 
 function updateAutomaticState() {
-    automaticState.value = resolveTimeState()
+    if (themeMode.value !== "auto") return
+    const minute = localMinuteNow()
+    // 仅在真实分钟变化时更新响应式状态，避免重复触发样式和 Canvas 监听。
+    if (automaticState.value.minute !== minute) {
+        automaticState.value = resolveTimeStateByMinute(minute)
+    }
+}
+
+function scheduleNextTick() {
+    if (timerId !== null || consumers === 0 || typeof window === "undefined") return
+    // 对齐下一个自然分钟，避免固定 30 秒轮询造成重复更新。
+    const delay = 60_000 - (Date.now() % 60_000) + 50
+    timerId = window.setTimeout(() => {
+        timerId = null
+        updateAutomaticState()
+        scheduleNextTick()
+    }, delay)
 }
 
 function startClock() {
-    if (timerId || typeof window === "undefined") return
+    if (typeof window === "undefined") return
     updateAutomaticState()
-    timerId = window.setInterval(updateAutomaticState, 30_000)
+    scheduleNextTick()
 }
 
 function stopClock() {
-    if (!timerId || consumers > 0) return
-    window.clearInterval(timerId)
+    if (timerId === null || consumers > 0) return
+    window.clearTimeout(timerId)
     timerId = null
 }
 
