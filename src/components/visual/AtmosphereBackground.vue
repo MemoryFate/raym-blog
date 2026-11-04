@@ -51,6 +51,7 @@ let pointerTargetX=0
 let pointerTargetY=0
 let pointerX=0
 let pointerY=0
+let cachedPalette=null
 
 const fract=(value)=>value-Math.floor(value)
 const seeded=(index,salt=0)=>fract(Math.sin(index*91.73+salt*17.19)*43758.5453123)
@@ -99,17 +100,25 @@ function resizeCanvas(){
     if(!canvas.value)return
 
     const mobile=window.innerWidth<760
-    dpr=Math.min(window.devicePixelRatio||1,mobile?1.5:2)
-    width=window.innerWidth
-    height=window.innerHeight
+    const nextDpr=Math.min(window.devicePixelRatio||1,mobile?1.5:2)
+    const nextWidth=window.innerWidth
+    const nextHeight=window.innerHeight
+    const bufferWidth=Math.round(nextWidth*nextDpr)
+    const bufferHeight=Math.round(nextHeight*nextDpr)
+    // 重设 canvas.width/height 会清空整个画布，因此尺寸不变时不要重置。
+    if(ctx&&width===nextWidth&&height===nextHeight&&dpr===nextDpr)return
 
-    canvas.value.width=Math.round(width*dpr)
-    canvas.value.height=Math.round(height*dpr)
+    dpr=nextDpr
+    width=nextWidth
+    height=nextHeight
+    canvas.value.width=bufferWidth
+    canvas.value.height=bufferHeight
     canvas.value.style.width=String(width)+"px"
     canvas.value.style.height=String(height)+"px"
 
     ctx=canvas.value.getContext("2d",{alpha:true})
     ctx.setTransform(dpr,0,0,dpr,0,0)
+    cachedPalette=null
     drawFrame(performance.now())
 }
 
@@ -413,10 +422,16 @@ function drawFrame(time=0){
     ctx.clearRect(0,0,width,height)
 
     const v=props.visual||{}
-    const starColor=cssColor("--color-canvas-star",[235,247,255])
-    const cloudColor=cssColor("--color-canvas-cloud",[98,120,136])
-    const primaryColor=cssColor("--color-ambient-primary",[31,106,152])
-    const secondaryColor=cssColor("--color-ambient-secondary",[126,215,255])
+    // CSS 变量只在主题切换或分钟变更后读取，避免每帧四次样式计算。
+    if(!cachedPalette){
+        cachedPalette={
+            starColor:cssColor("--color-canvas-star",[235,247,255]),
+            cloudColor:cssColor("--color-canvas-cloud",[98,120,136]),
+            primaryColor:cssColor("--color-ambient-primary",[31,106,152]),
+            secondaryColor:cssColor("--color-ambient-secondary",[126,215,255]),
+        }
+    }
+    const {starColor,cloudColor,primaryColor,secondaryColor}=cachedPalette
 
     drawAmbient(time,v,primaryColor,secondaryColor)
     drawClouds(time,v,cloudColor)
@@ -426,7 +441,7 @@ function drawFrame(time=0){
 }
 
 function animate(time){
-    if(time-lastFrame>=33){
+    if(time-lastFrame>=42){
         drawFrame(time)
         lastFrame=time
     }
@@ -467,7 +482,16 @@ function handleMotionPreference(event){
     restart()
 }
 
-watch(()=>[props.theme,props.visual],restart,{deep:true})
+watch(
+    ()=>[props.theme,props.visual],
+    ()=>{
+        cachedPalette=null
+        // 动画循环会使用最新的 props，无须因每分钟主题参数更新而 restart。
+        // 尊重系统减少动态效果设置：静态模式只需在主题变化后绘制一帧。
+        if(reducedMotion&&!document.hidden)drawFrame(performance.now())
+    },
+    {flush:"post"},
+)
 
 onMounted(()=>{
     mediaQuery=window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -545,7 +569,6 @@ onBeforeUnmount(()=>{
         );
     transform:scale(1.02);
     transform-origin:center;
-    transition:background 900ms ease;
     animation:sky-breathe 18s ease-in-out infinite alternate;
 }
 
