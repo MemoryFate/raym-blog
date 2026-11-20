@@ -88,6 +88,68 @@
                     <h3>{{ data.type === "encrypt" ? "加密模式" : "解密模式" }}</h3>
                     <p class="mono accent">{{ data.output ? "● 已生成结果" : "○ 等待输入" }}</p>
                 </NeonGlass>
+
+                <NeonGlass class="side-card url-quick-card">
+                    <div class="url-quick-heading">
+                        <div>
+                            <p class="eyebrow">快捷工具 · 本地处理</p>
+                            <h3>URL 预处理</h3>
+                        </div>
+                        <span class="mono url-quick-mark">%</span>
+                    </div>
+                    <p class="url-quick-tip">处理 URL 编码密文，结果一键填入 AES-GCM 解密框。</p>
+
+                    <div class="url-quick-top">
+                        <a-select
+                            class="url-encoding-select"
+                            :value="urlTool.encoding"
+                            :options="URL_ENCODING_OPTIONS"
+                            size="small"
+                            aria-label="URL 字符编码"
+                            @change="changeUrlEncoding"
+                        />
+                        <button type="button" class="url-text-action" :disabled="!data.input" @click="readCipherToUrl">读取左侧</button>
+                    </div>
+
+                    <a-textarea
+                        :value="urlTool.input"
+                        :rows="3"
+                        class="url-quick-input"
+                        placeholder="粘贴经过 URL 编码的密文…"
+                        aria-label="URL 预处理输入内容"
+                        spellcheck="false"
+                        @update:value="updateUrlInput"
+                    />
+
+                    <div class="url-quick-actions">
+                        <button type="button" @click="runUrlOperation('decode')">URL 解码</button>
+                        <button type="button" @click="runUrlOperation('encode')">URL 编码</button>
+                        <button type="button" @click="runUrlOperation('space-to-plus')">空格 → +</button>
+                        <button type="button" @click="runUrlOperation('decode-space-to-plus')">解码 + 修复</button>
+                    </div>
+
+                    <Transition name="url-feedback">
+                        <div v-if="urlTool.operation || urlTool.error" class="url-quick-result" aria-live="polite">
+                            <div class="url-quick-result-head">
+                                <span>{{ urlTool.error ? "处理失败" : urlOperationLabel }}</span>
+                                <button v-if="urlTool.operation" type="button" @click="copyUrlResult">复制</button>
+                            </div>
+                            <p v-if="urlTool.error" class="url-quick-error">{{ urlTool.error }}</p>
+                            <pre v-else>{{ urlTool.output || "（空结果）" }}</pre>
+                        </div>
+                    </Transition>
+
+                    <div class="url-quick-footer">
+                        <button type="button" class="url-text-action" @click="clearUrlTool">清空</button>
+                        <a-button
+                            type="primary"
+                            size="small"
+                            :disabled="!urlTool.output || !isDecryptReadyOperation(urlTool.operation)"
+                            @click="applyUrlToDecrypt"
+                        >填入并解密</a-button>
+                    </div>
+                    <p class="url-quick-footnote">空格修复适用于 Base64 的 + 被转换为空格的情况。</p>
+                </NeonGlass>
             </aside>
         </div>
     </div>
@@ -98,6 +160,80 @@ import { computed, reactive, watch } from "vue"
 import { message } from "ant-design-vue"
 import forge from "node-forge"
 import NeonGlass from "@/components/ui/NeonGlass.vue"
+import { URL_ENCODING_OPTIONS } from "@/utils/urlCodec.js"
+import { preprocessAesUrlText, isDecryptReadyOperation } from "@/utils/aesUrlPreprocess.js"
+
+const urlTool = reactive({
+    input: "",
+    output: "",
+    encoding: "UTF-8",
+    operation: "",
+    error: "",
+})
+
+const urlOperationLabel = computed(() => ({
+    encode: "URL 编码完成",
+    decode: "URL 解码完成",
+    "space-to-plus": "空格修复完成",
+    "decode-space-to-plus": "解码和修复完成",
+})[urlTool.operation] || "待处理")
+
+function resetUrlResult() {
+    urlTool.output = ""
+    urlTool.operation = ""
+    urlTool.error = ""
+}
+
+function updateUrlInput(value) {
+    urlTool.input = value
+    resetUrlResult()
+}
+
+function changeUrlEncoding(value) {
+    urlTool.encoding = value
+    resetUrlResult()
+}
+
+function readCipherToUrl() {
+    if (!data.input) return
+    urlTool.input = data.input
+    resetUrlResult()
+}
+
+function clearUrlTool() {
+    urlTool.input = ""
+    resetUrlResult()
+}
+
+function runUrlOperation(operation) {
+    if (!urlTool.input) {
+        message.warning("请先输入需要处理的 URL 文本")
+        return
+    }
+    try {
+        urlTool.output = preprocessAesUrlText(urlTool.input, operation, urlTool.encoding)
+        urlTool.operation = operation
+        urlTool.error = ""
+    } catch (error) {
+        resetUrlResult()
+        urlTool.error = error instanceof Error ? error.message : "URL 处理失败"
+        message.error(urlTool.error)
+    }
+}
+
+function applyUrlToDecrypt() {
+    if (!urlTool.output || !isDecryptReadyOperation(urlTool.operation)) return
+    // 保持原 AES 密钥、已验证密钥与输入监听逻辑不变。
+    const unchanged = data.type === "decrypt" && data.input === urlTool.output
+    data.type = "decrypt"
+    data.input = urlTool.output
+    if (unchanged) transformInput()
+    message.success("已填入 Base64 密文，正在按原有逻辑解密")
+}
+
+function copyUrlResult() {
+    if (urlTool.operation) copyToClipBoard(urlTool.output)
+}
 
 const VERIFIED_KEYS_STORAGE = "aes-gcm-verified-keys-v1"
 const CURRENT_KEY_STORAGE = "aes-gcm-key"
@@ -265,4 +401,36 @@ async function copyToClipBoard(value) {
 :deep(.ant-input),:deep(.ant-input-affix-wrapper),:deep(.ant-input-password){color:var(--color-text-primary)!important;background:var(--color-bg-control)!important;border-color:var(--color-border-default)!important}:deep(.ant-input::placeholder){color:color-mix(in srgb,var(--color-text-secondary) 70%,transparent)}:deep(.ant-input-affix-wrapper input){color:var(--color-text-primary)!important;background:transparent!important}:deep(.verified-select .ant-select-selector){color:var(--color-text-primary)!important;background:var(--color-bg-control)!important;border-color:var(--color-border-default)!important}:deep(.verified-select .ant-select-selection-placeholder){color:color-mix(in srgb,var(--color-text-secondary) 70%,transparent)!important}:deep(.verified-select .ant-select-selection-item){color:var(--color-text-primary)!important}
 @media(max-width:900px){.tool-layout{grid-template-columns:1fr}.side-stack{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.tool-detail{margin-top:38px}.tool-head{align-items:flex-start;flex-direction:column}.side-stack{grid-template-columns:1fr}.work-surface{padding:20px}}
+
+/* 紧凑的 URL 预处理面板：不会占据原有 AES 主编辑区高度 */
+.url-quick-card{padding:17px 18px 15px}
+.url-quick-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.url-quick-heading h3{font-size:17px;margin:6px 0 0}
+.url-quick-mark{font-size:22px;color:var(--color-accent-primary);opacity:.65}
+.url-quick-tip{margin:9px 0 12px!important;color:var(--color-text-secondary);font-size:11px;line-height:1.55!important}
+.url-quick-top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.url-encoding-select{flex:1;min-width:0}
+.url-text-action{border:0;background:transparent;color:var(--color-accent-primary);cursor:pointer;white-space:nowrap;font-size:11px;padding:5px 0}
+.url-text-action:disabled{opacity:.4;cursor:not-allowed}
+.url-quick-input{resize:vertical;min-height:72px!important}
+.url-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.url-quick-actions button{min-width:0;min-height:32px;padding:6px 5px;border-radius:9px;border:1px solid var(--color-border-default);background:var(--color-bg-control);color:var(--color-text-primary);font-size:11px;cursor:pointer;transition:transform 170ms ease,border-color 170ms ease,background 170ms ease}
+.url-quick-actions button:hover{transform:translateY(-1px);border-color:var(--color-border-strong);background:var(--color-bg-selected)}
+.url-quick-actions button:active{transform:translateY(0)}
+.url-quick-result{margin-top:10px;padding:9px 10px;border:1px solid var(--color-border-default);border-radius:9px;background:var(--color-bg-control);overflow:hidden}
+.url-quick-result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px;color:var(--color-accent-primary)}
+.url-quick-result-head button{background:transparent;color:var(--color-accent-primary);border:0;cursor:pointer;font-size:10px}
+.url-quick-result pre{margin:7px 0 0;max-height:64px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--color-text-primary);font:11px/1.5 "IBM Plex Mono",monospace}
+.url-quick-error{margin:7px 0 0!important;font-size:11px;line-height:1.5;color:#e87878!important;overflow-wrap:anywhere}
+.url-quick-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}
+.url-quick-footer :deep(.ant-btn-primary){color:var(--color-accent-contrast);background:var(--color-action-primary);border-color:var(--color-action-primary)}
+.url-quick-footer :deep(.ant-btn-primary:disabled){opacity:.5}
+.url-quick-footnote{font-size:10px;line-height:1.5!important;margin:8px 0 0!important;color:var(--color-text-secondary)}
+:deep(.url-quick-input.ant-input){font-size:11px;line-height:1.5;color:var(--color-text-primary)!important;background:var(--color-bg-control)!important;border-color:var(--color-border-default)!important}
+:deep(.url-encoding-select .ant-select-selector){border-color:var(--color-border-default)!important;background:var(--color-bg-control)!important}
+:deep(.url-encoding-select .ant-select-selection-item){color:var(--color-text-primary)!important;font-size:11px}
+.url-feedback-enter-active{transition:opacity 190ms ease,transform 190ms cubic-bezier(.2,.8,.2,1)}
+.url-feedback-enter-from{opacity:0;transform:translateY(5px)}
+@media(max-width:900px) and (min-width:651px){.side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}.url-quick-card{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){.url-quick-actions button,.url-feedback-enter-active{transition:none!important}.url-quick-actions button:hover{transform:none}}
 </style>
