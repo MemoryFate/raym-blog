@@ -103,7 +103,7 @@
                         </div>
                         <span class="mono url-quick-mark">%</span>
                     </div>
-                    <p class="url-quick-tip">连续操作会处理上一步结果，修改输入后重新开始。</p>
+                    <p class="url-quick-tip">解码后空格自动转为 +。连续操作处理上一步结果，修改输入后重置。</p>
 
                     <div class="url-quick-top">
                         <a-select
