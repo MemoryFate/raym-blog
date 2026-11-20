@@ -36,9 +36,9 @@ defineProps({
     backdrop-filter:blur(18px) saturate(112%);
     -webkit-backdrop-filter:blur(18px) saturate(112%);
     transition:
-        transform 190ms ease,
-        border-color 190ms ease,
-        box-shadow 190ms ease;
+        transform 220ms cubic-bezier(.22,1,.36,1),
+        border-color 220ms ease,
+        box-shadow 220ms ease;
     /* Do not animate surface independently from its foreground. */
 }
 
@@ -79,14 +79,14 @@ defineProps({
 }
 
 .neon-glass--interactive:hover {
-    transform:translateY(-4px);
+    transform:translateY(-2px);
     background:var(--color-bg-selected);
     border-color:var(--color-border-strong);
     box-shadow:var(--shadow-hover);
 }
 
 .neon-glass--interactive:hover::after { opacity:.025; }
-.neon-glass--interactive:active { transform:translateY(-1px); }
+.neon-glass--interactive:active { transform:translateY(0); }
 .neon-glass--interactive:active::after { opacity:.08; }
 
 .neon-glass--interactive:focus-within {
