@@ -36,10 +36,10 @@ const { theme, uiTheme, styleVars, atmosphere } = useTimeTheme()
 .site-layer { position: relative; z-index: 1; min-height: 100vh; padding-top: 18px; }
 .site-main { position: relative; min-height: calc(100vh - 210px); }
 .route-fade-enter-active,
-.route-fade-leave-active { transition: opacity 140ms ease, transform 140ms ease; }
+.route-fade-leave-active { transition: opacity 230ms cubic-bezier(.22,1,.36,1), transform 230ms cubic-bezier(.22,1,.36,1); }
 .route-fade-leave-active { position: absolute; inset: 0 0 auto; width: 100%; pointer-events: none; }
-.route-fade-enter-from { opacity: 0; transform: translateY(4px); }
-.route-fade-leave-to { opacity: 0; transform: translateY(-3px); }
+.route-fade-enter-from { opacity: 0; transform: translateY(7px); }
+.route-fade-leave-to { opacity: 0; transform: translateY(-4px); }
 
 @media (max-width: 760px) { .site-layer { padding-top: 10px; } }
 @media (prefers-reduced-motion: reduce) {
