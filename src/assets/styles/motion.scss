@@ -1,0 +1,63 @@
+/*
+ * RayM 轻量 CSS 动效
+ * 参考 Animista 的 fade-in/slide-in 思路，独立编写，避免循环闪烁。
+ * 仅在视图首次挂载时播放；主题颜色变化不会重新触发。
+ */
+:root {
+    --raym-ease-out: cubic-bezier(.22, 1, .36, 1);
+    --raym-motion-fast: 170ms;
+    --raym-motion-normal: 260ms;
+}
+
+@keyframes raym-fade-rise {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 9px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes raym-soft-appear {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 6px, 0) scale(.99);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* 首页与栏目标题轻量入场，不在每次主题更新时重新播放 */
+    .site-main :is(.hero-copy, .intro, .tool-head, .lab-head) {
+        animation: raym-fade-rise 360ms var(--raym-ease-out) both;
+    }
+
+    .site-main .hero .console {
+        animation: raym-soft-appear 420ms 80ms var(--raym-ease-out) both;
+    }
+
+    /* 仅过渡交互反馈，不对整个页面常驻动画 */
+    .site-main :is(.ant-input, .ant-input-affix-wrapper, .ant-select-selector) {
+        transition: border-color var(--raym-motion-fast) ease,
+                    box-shadow var(--raym-motion-fast) ease;
+    }
+
+    .site-main :is(button, .ant-btn):not(:disabled) {
+        transition-property: color, background-color, border-color, box-shadow;
+        transition-duration: var(--raym-motion-fast);
+        transition-timing-function: ease;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    .site-main :is(.hero-copy, .intro, .tool-head, .lab-head, .hero .console) {
+        animation: none !important;
+    }
+}
