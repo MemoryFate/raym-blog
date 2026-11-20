@@ -5,10 +5,7 @@ import { preprocessAesUrlText } from "../src/utils/aesUrlPreprocess.js"
 test("URL 解码保留 Base64 原有加号并还原百分号编码", () => {
     assert.equal(preprocessAesUrlText("abc%2Bdef%2Fghi%3D", "decode"), "abc+def/ghi=")
     assert.equal(preprocessAesUrlText("a+b", "decode"), "a+b")
-})
-
-test("空格修复仅替换 ASCII 空格，不影响加号及其他空白", () => {
-    assert.equal(preprocessAesUrlText("a b+c\td", "space-to-plus"), "a+b+c\td")
+    assert.equal(preprocessAesUrlText("a b%20c%2Bd", "decode"), "a b c+d")
 })
 
 test("URL 编码正确转换 Base64 中的特殊字符", () => {

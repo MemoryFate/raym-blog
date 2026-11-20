@@ -129,7 +129,6 @@
                     <div class="url-quick-actions">
                         <button type="button" @click="runUrlOperation('decode')">URL 解码</button>
                         <button type="button" @click="runUrlOperation('encode')">URL 编码</button>
-                        <button type="button" @click="runUrlOperation('space-to-plus')">空格 → +</button>
                     </div>
 
                     <Transition name="url-feedback">
@@ -146,7 +145,6 @@
                     <div class="url-quick-footer">
                         <button type="button" class="url-text-action" @click="clearUrlTool">清空</button>
                     </div>
-                    <p class="url-quick-footnote">空格修复适用于 Base64 的 + 被转换为空格的情况。</p>
                 </NeonGlass>
             </aside>
         </div>
@@ -172,7 +170,6 @@ const urlTool = reactive({
 const urlOperationLabel = computed(() => ({
     encode: "URL 编码完成",
     decode: "URL 解码完成",
-    "space-to-plus": "空格修复完成",
 })[urlTool.operation] || "待处理")
 
 function resetUrlResult() {
@@ -200,15 +197,6 @@ function runUrlOperation(operation) {
     const source = urlTool.operation ? urlTool.output : urlTool.input
     if (!source) {
         message.warning("请先输入需要处理的 URL 文本")
-        return
-    }
-    if (operation === "space-to-plus" && !source.includes(" ")) {
-        urlTool.error = ""
-        message.info(
-            /%20/i.test(source)
-                ? "未发现实际空格；%20 是 URL 编码，请先点击“URL 解码”"
-                : "未发现需要转换的空格"
-        )
         return
     }
     try {
@@ -414,7 +402,7 @@ async function copyToClipBoard(value) {
 .url-encoding-select{flex:1;min-width:0}
 .url-text-action{border:0;background:transparent;color:var(--color-accent-primary);cursor:pointer;white-space:nowrap;font-size:11px;padding:5px 0}
 .url-quick-input{resize:vertical;min-height:72px!important}
-.url-quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
+.url-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
 .url-quick-actions button{min-width:0;min-height:32px;padding:6px 5px;border-radius:9px;border:1px solid var(--color-border-default);background:var(--color-bg-control);color:var(--color-text-primary);font-size:11px;cursor:pointer;transition:transform 170ms ease,border-color 170ms ease,background 170ms ease}
 .url-quick-actions button:hover{transform:translateY(-1px);border-color:var(--color-border-strong);background:var(--color-bg-selected)}
 .url-quick-actions button:active{transform:translateY(0)}
@@ -424,7 +412,6 @@ async function copyToClipBoard(value) {
 .url-quick-result pre{margin:7px 0 0;max-height:64px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--color-text-primary);font:11px/1.5 "IBM Plex Mono",monospace}
 .url-quick-error{margin:7px 0 0!important;font-size:11px;line-height:1.5;color:#e87878!important;overflow-wrap:anywhere}
 .url-quick-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}
-.url-quick-footnote{font-size:10px;line-height:1.5!important;margin:8px 0 0!important;color:var(--color-text-secondary)}
 :deep(.url-quick-input.ant-input){font-size:11px;line-height:1.5;color:var(--color-text-primary)!important;background:var(--color-bg-control)!important;border-color:var(--color-border-default)!important}
 :deep(.url-encoding-select .ant-select-selector){border-color:var(--color-border-default)!important;background:var(--color-bg-control)!important}
 :deep(.url-encoding-select .ant-select-selection-item){color:var(--color-text-primary)!important;font-size:11px}
