@@ -14,13 +14,7 @@ export function preprocessAesUrlText(input, operation, encoding = "UTF-8") {
             return decodeUrlText(input, { encoding })
         case "space-to-plus":
             return input.replace(/ /g, "+")
-        case "decode-space-to-plus":
-            return decodeUrlText(input, { encoding, spaceToPlus:true })
         default:
             throw new RangeError("不支持的 URL 预处理操作：" + operation)
     }
-}
-
-export function isDecryptReadyOperation(operation) {
-    return ["decode", "space-to-plus", "decode-space-to-plus"].includes(operation)
 }

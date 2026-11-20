@@ -43,7 +43,11 @@
                                 :aria-label="'展开' + group.label + '子菜单'"
                                 :aria-expanded="expandedGroup === group.label"
                                 @click="toggleGroup(group.label)"
-                            ><span aria-hidden="true">⌄</span></button>
+                            >
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">
+                                    <path d="M2.5 4.25 6 7.75 9.5 4.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
                         </div>
                         <div class="nav-popover">
                             <div class="nav-popover-card">
@@ -221,7 +225,7 @@ function closeMenu() {
     background:transparent;
     cursor:pointer;
 }
-.nav-expand span { font-size:17px;transition:transform 180ms ease; }
+.nav-expand svg { display:block;width:12px;height:12px;transform-origin:center;transition:transform 180ms ease; }
 .nav-external { white-space:nowrap; }
 .nav-popover {
     position:absolute;
@@ -289,8 +293,8 @@ function closeMenu() {
         pointer-events:auto;
         transform:translateY(0);
     }
-    .nav-group:hover .nav-expand span,
-    .nav-group:focus-within .nav-expand span { transform:rotate(180deg); }
+    .nav-group:hover .nav-expand svg,
+    .nav-group:focus-within .nav-expand svg { transform:rotate(180deg); }
 }
 @media (max-width:980px) {
     .header-wrap { top:12px;width:calc(100% - 28px); }
@@ -333,7 +337,7 @@ function closeMenu() {
     .nav-main-link { display:flex;align-items:center;padding:11px 13px; }
     .nav-entry { justify-content:space-between; }
     .nav-expand { width:40px;height:40px; }
-    .nav-group--expanded .nav-expand span { transform:rotate(180deg); }
+    .nav-group--expanded .nav-expand svg { transform:rotate(180deg); }
     .nav-popover,
     .nav-group--right .nav-popover {
         position:static;
@@ -363,8 +367,9 @@ function closeMenu() {
 @media (prefers-reduced-motion:reduce) {
     .nav-popover,
     .site-nav,
-    .nav-expand span,
+    .nav-expand svg,
     .site-nav a,
     .site-nav .nav-sub-link { transition:none!important;transform:none!important; }
 }
 </style>
+
