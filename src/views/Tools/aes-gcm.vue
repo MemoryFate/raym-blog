@@ -103,7 +103,7 @@
                         </div>
                         <span class="mono url-quick-mark">%</span>
                     </div>
-                    <p class="url-quick-tip">处理 URL 编码密文，结果可复制使用。</p>
+                    <p class="url-quick-tip">连续操作会处理上一步结果，修改输入后重新开始。</p>
 
                     <div class="url-quick-top">
                         <a-select
@@ -197,12 +197,22 @@ function clearUrlTool() {
 }
 
 function runUrlOperation(operation) {
-    if (!urlTool.input) {
+    const source = urlTool.operation ? urlTool.output : urlTool.input
+    if (!source) {
         message.warning("请先输入需要处理的 URL 文本")
         return
     }
+    if (operation === "space-to-plus" && !source.includes(" ")) {
+        urlTool.error = ""
+        message.info(
+            /%20/i.test(source)
+                ? "未发现实际空格；%20 是 URL 编码，请先点击“URL 解码”"
+                : "未发现需要转换的空格"
+        )
+        return
+    }
     try {
-        urlTool.output = preprocessAesUrlText(urlTool.input, operation, urlTool.encoding)
+        urlTool.output = preprocessAesUrlText(source, operation, urlTool.encoding)
         urlTool.operation = operation
         urlTool.error = ""
     } catch (error) {
